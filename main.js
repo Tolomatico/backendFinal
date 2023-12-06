@@ -1,5 +1,3 @@
-// Creamos la clase ProductManager
-
 class ProductManager {
 
     static ItemId = 1
