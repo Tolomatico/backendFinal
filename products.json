@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "coca",
+    "description": "gaseosa cola",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "aaa",
+    "stock": 25
+  },
+  {
+    "id": 2,
+    "title": "pepsi",
+    "description": "gaseosa cola",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "aab",
+    "stock": 25
+  },
+  {
+    "id": 3,
+    "title": "sprite",
+    "description": "gaseosa limalimon",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "aac",
+    "stock": 25
+  }
+]

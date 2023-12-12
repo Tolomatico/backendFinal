@@ -1,13 +1,18 @@
+const fs = require("fs").promises
+
+
 class ProductManager {
 
     static ItemId = 1
 
-    constructor() {
-        this.products = []
+    constructor(path) {
+        this.products = [],
+            this.path = path
     }
 
-    addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(product) {
 
+        let { title, description, price, thumbnail, code, stock } = product
 
 
         if (!title || !description || !price || !thumbnail || !code || !stock) {
@@ -32,6 +37,10 @@ class ProductManager {
 
         this.products.push(newProduct)
 
+        await this.saveFile(this.products)
+
+
+
     }
 
     getProducts() {
@@ -39,34 +48,119 @@ class ProductManager {
         return
     }
 
-    getProductById(id) {
-        const product = this.products.find(item => item.id === id)
-        if (!product) {
-            console.log("No se a encontrado ningún producto con ese id")
+    async getProductById(id) {
+
+        try {
+            const arrayProducts = await this.readFile()
+            const product = await arrayProducts.find(item => item.id === id)
+            if (!product) {
+                console.log("No se a encontrado ningún producto con ese id")
+            }
+            else {
+                console.log("El producto con ese id es")
+                return product
+                
+            }
+        } catch (error) {
+            console.log("Error al leer los archivos", error)
         }
-        else {
-            console.log("El producto con ese id es: ",product)
-        }
-       
+
+
+
     }
+
+    async readFile() {
+
+        try {
+            const respuesta = await fs.readFile(this.path, "utf-8")
+            const arrayProducts = JSON.parse(respuesta)
+            return arrayProducts
+
+        } catch (error) {
+            console.log("Error al leer el archivo", error)
+        }
+    }
+
+    async saveFile(arrayProducts) {
+        try {
+            await fs.writeFile(this.path, JSON.stringify(arrayProducts, null, 2))
+
+        } catch (error) {
+            console.log("No se pudo guardar el archivo", error)
+        }
+    }
+
+    async updateProduct(id,updatedProduct){
+        try{
+            const arrayProducts = await this.readFile()
+            const index = await arrayProducts.findIndex(item => item.id === id)
+            if(index !== -1){
+                arrayProducts.splice(index,1,updatedProduct)
+                await this.saveFile(arrayProducts)
+            }else {
+                console.log("No se encontro el producto")
+            }
+
+        }catch(error){
+            console.log("Error al actualizar", error)
+        }
+    }
+
+    
+    async deleteProduct(id){
+        try{
+            const arrayProducts = await this.readFile()
+            const index = await arrayProducts.findIndex(item => item.id === id)
+            if(index !== -1){
+                arrayProducts.splice(index,1)
+                await this.saveFile(arrayProducts)
+            }else {
+                console.log("No se encontro el producto")
+            }
+
+        }catch(error){
+            console.log("Error al borrar", error)
+        }
+    }
+
+
 
 }
 
-const manager = new ProductManager()
+const manager = new ProductManager("./products.json")
 
 manager.getProducts()
 
-manager.addProduct("coca", "gaseosa cola", 200, "Sin imagen", "aaa", 25)
-manager.addProduct("pepsi", "gaseosa cola", 200, "Sin imagen", "aaa", 25)
-manager.addProduct("sprite", "gaseosa limalimon", 200, "Sin imagen", "bbb", 25)
-manager.addProduct("7up", "gaseosa limalimon", 200, "Sin imagen", "ccc", 25)
-manager.addProduct("fanta", "gaseosa naranja", 200, "Sin imagen", "ddd",25)
-manager.addProduct("mirinda", "gaseosa naranja", 200, "Sin imagen", "eee")
+const coca = {
+    title: "coca",
+    description: "gaseosa cola",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "aaa",
+    stock: 25
+}
 
+const pepsi = {
+    title: "pepsi",
+    description: "gaseosa cola",
+    price: 200,
+    thumbnail: "Sin imagen",
+    code: "aab",
+    stock: 25
+} 
 
-manager.getProducts()
+ const sprite={
+    "title": "sprite",
+    "description": "gaseosa limalimon",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "aac",
+    "stock": 25
+  }
 
-manager.getProductById(0)
-manager.getProductById(1)
-manager.getProductById(2)
+  manager.addProduct(coca)
+  manager.addProduct(pepsi)
+  manager.addProduct(sprite)
+  manager.getProducts()
+
 
