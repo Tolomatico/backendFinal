@@ -1,0 +1,92 @@
+[
+    {
+      "id": 1,
+      "title": "coca",
+      "description": "gaseosa cola",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aaa",
+      "stock": 25
+    },
+    {
+      "id": 2,
+      "title": "pepsi",
+      "description": "gaseosa cola",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aab",
+      "stock": 25
+    },
+    {
+      "id": 3,
+      "title": "sprite",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aac",
+      "stock": 25
+    },
+    {
+      "id": 4,
+      "title": "fanta",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aae",
+      "stock": 25
+    },
+    {
+      "id": 5,
+      "title": "mirinda",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aaf",
+      "stock": 25
+    },
+    {
+      "id": 6,
+      "title": "sevenUp",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aad",
+      "stock": 25
+    },
+    {
+      "id": 7,
+      "title": "speed",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aah",
+      "stock": 25
+    },
+    {
+      "id": 8,
+      "title": "monster",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aag",
+      "stock": 25
+    },
+    {
+      "id": 9,
+      "title": "fernet",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aai",
+      "stock": 25
+    },
+    {
+      "id": 10,
+      "title": "campari",
+      "description": "gaseosa limalimon",
+      "price": 200,
+      "thumbnail": "Sin imagen",
+      "code": "aaj",
+      "stock": 25
+    }
+  ]

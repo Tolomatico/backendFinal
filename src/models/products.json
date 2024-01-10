@@ -1,28 +1,11 @@
 [
   {
-    "id": 1,
-    "title": "coca",
-    "description": "gaseosa cola",
-    "price": 200,
-    "thumbnail": "Sin imagen",
-    "code": "aaa",
-    "stock": 25
-  },
-  {
-    "id": 2,
-    "title": "pepsi",
-    "description": "gaseosa cola",
-    "price": 200,
-    "thumbnail": "Sin imagen",
-    "code": "aab",
-    "stock": 25
-  },
-  {
     "id": 3,
     "title": "sprite",
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aac",
     "stock": 25
   },
@@ -32,6 +15,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aae",
     "stock": 25
   },
@@ -41,6 +25,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aaf",
     "stock": 25
   },
@@ -50,6 +35,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aad",
     "stock": 25
   },
@@ -59,6 +45,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aah",
     "stock": 25
   },
@@ -68,6 +55,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aag",
     "stock": 25
   },
@@ -77,6 +65,7 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aai",
     "stock": 25
   },
@@ -86,7 +75,38 @@
     "description": "gaseosa limalimon",
     "price": 200,
     "thumbnail": "Sin imagen",
+    "status": true,
     "code": "aaj",
     "stock": 25
+  },
+  {
+    "id": 11,
+    "title": "vodka",
+    "description": "alcohol",
+    "price": 500,
+    "thumbnail": "Sin imagen",
+    "status": true,
+    "code": "aat",
+    "stock": 25
+  },
+  {
+    "id": 12,
+    "title": "tequila",
+    "description": "alcohol",
+    "price": 500,
+    "thumbnail": "Sin imagen",
+    "status": true,
+    "code": "asd",
+    "stock": 25
+  },
+  {
+    "id": 13,
+    "title": "CocaCola",
+    "description": "gaseosa cola",
+    "price": 1500,
+    "thumbnail": "Sin imagen",
+    "status": true,
+    "code": "aaa",
+    "stock": 50
   }
 ]
