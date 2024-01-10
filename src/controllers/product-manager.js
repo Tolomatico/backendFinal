@@ -12,7 +12,7 @@ class ProductManager {
 
     async addProduct(product) {
 
-        await this.readFile()
+         this.products= await this.readFile()
 
         let { title, description, price, thumbnail, code, stock,status } = product
 
@@ -27,9 +27,8 @@ class ProductManager {
             return
         }
 
+         const maxId =Math.max(...this.products.map(item=>item.id))
         
-        const maxId = this.products.reduce((max, product) =>
-         (product.id > max ? product.id : max), 0)
 
         const newProduct = {
             id: maxId+ 1,
