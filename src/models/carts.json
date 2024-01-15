@@ -1,21 +1,15 @@
 [
-    {
-      "id": 1,
-      "title": "coca",
-      "description": "gaseosa cola",
-      "price": 200,
-      "thumbnail": "Sin imagen",
-      "code": "aaa",
-      "stock": 25
-    },
-    {
-      "id": 2,
-      "title": "pepsi",
-      "description": "gaseosa cola",
-      "price": 200,
-      "thumbnail": "Sin imagen",
-      "code": "aab",
-      "stock": 25
-    }
-   
-  ]
+  {
+    "id": 1,
+    "products": [
+      {
+        "product": 1,
+        "quantity": 2
+      },
+      {
+        "product": 2,
+        "quantity": 25
+      }
+    ]
+  }
+]

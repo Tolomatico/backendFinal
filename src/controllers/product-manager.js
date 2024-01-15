@@ -101,7 +101,7 @@ class ProductManager {
         try {
             const arrayProducts = await this.readFile();
             const { title, description, price, thumbnail, status, code, stock } = await updatedProduct
-            const index = await arrayProducts.findIndex(item => item.id === id);
+            const index = await arrayProducts.findIndex(item => item.id == id);
 
     
             if (index !== -1) {
