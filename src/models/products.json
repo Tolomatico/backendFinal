@@ -6,7 +6,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aaa",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 2,
@@ -15,7 +17,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aab",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 3,
@@ -24,7 +28,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aac",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 4,
@@ -33,7 +39,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aae",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 5,
@@ -42,7 +50,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aaf",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 6,
@@ -51,7 +61,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aad",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"gaseoasa"
   },
   {
     "id": 7,
@@ -60,7 +72,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aah",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"bebida energética"
   },
   {
     "id": 8,
@@ -69,7 +83,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aag",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"bebida energética"
   },
   {
     "id": 9,
@@ -78,7 +94,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aai",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"alcohol"
   },
   {
     "id": 10,
@@ -87,7 +105,9 @@
     "price": 200,
     "thumbnail": "Sin imagen",
     "code": "aaj",
-    "stock": 25
+    "stock": 25,
+    "status":true,
+    "category":"alcohol"
   },
   {
     "id": 11,
@@ -97,7 +117,8 @@
     "thumbnail": "Sin imagen",
     "status": true,
     "code": "aaz",
-    "stock": 5
+    "stock": 5,
+    "category":"alcohol"
   },
   {
     "id": 12,
@@ -107,6 +128,7 @@
     "thumbnail": "Sin imagen",
     "status": true,
     "code": "aaq",
-    "stock": 10
+    "stock": 10,
+    "category":"alcohol"
   }
 ]

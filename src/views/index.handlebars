@@ -1,3 +1,40 @@
-<h1>Hola mundo</h1>
-<script src="https://cdn.socket.io/4.7.3/socket.io.min.js" integrity="sha384-+miq58Ltmjm+SSP5g8Ok6dpMO/6R4n8xe/x1Yj0Bdb9kiEz25LTnWv/GZQTRQamg" crossorigin="anonymous"></script>
+<h1>{{title}}</h1>
+
+{{#if products.length }}
+
+<section class="container">
+{{#each products}}
+{{#if status}}
+<div class="card">
+
+    
+    <img class="img" src={{thumbnail}} />
+    <p>{{title}}</p>
+    <p>${{price}}</p>
+    
+
+</div>
+{{/if}}
+{{/each}}
+</section>
+
+{{else}}
+<p>No hay productos disponibles.</p>
+
+{{/if}}
+
+
+{{!-- "id": 12,
+"title": "whisky",
+"description": "black label",
+"price": 25000,
+"thumbnail": "Sin imagen",
+"status": true,
+"code": "aaq",
+"stock": 10,
+"category":"alcohol"  --}}
+
+<script src="https://cdn.socket.io/4.7.3/socket.io.min.js"
+    integrity="sha384-+miq58Ltmjm+SSP5g8Ok6dpMO/6R4n8xe/x1Yj0Bdb9kiEz25LTnWv/GZQTRQamg"
+    crossorigin="anonymous"></script>
 <script src="js/index.js"></script>

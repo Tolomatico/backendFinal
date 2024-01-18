@@ -29,8 +29,8 @@ app.post("/upload",upload.single("img"),(req,res)=>{
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use("/api", productsRouter)
-app.use("/api", cartsRouter)
+app.use("/api/", productsRouter)
+app.use("/api/", cartsRouter)
 app.use("/", viewsRouter)
 app.use(express.static("./src/public"))
 

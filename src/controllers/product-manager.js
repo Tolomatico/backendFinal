@@ -14,10 +14,10 @@ class ProductManager {
 
          this.products= await this.readFile()
 
-        let { title, description, price, thumbnail, code, stock,status } = product
+        let { title, description, price, thumbnail, code, stock,status,category } = product
 
 
-        if (!title || !description || !price || !thumbnail || !code || !stock || !status) {
+        if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category) {
             console.log("Existen campos vacios,por favor, completarlos")
             return
         }
@@ -38,7 +38,8 @@ class ProductManager {
             thumbnail,
             status,
             code,
-            stock
+            stock,
+            category
         }
 
         this.products.push(newProduct)
@@ -100,7 +101,7 @@ class ProductManager {
     async updateProduct(id, updatedProduct) {
         try {
             const arrayProducts = await this.readFile();
-            const { title, description, price, thumbnail, status, code, stock } = await updatedProduct
+            const { title, description, price, thumbnail, status, code, stock,category } = await updatedProduct
             const index = await arrayProducts.findIndex(item => item.id == id);
 
     
@@ -112,6 +113,9 @@ class ProductManager {
                 arrayProducts[index].status= status
                 arrayProducts[index].code= code
                 arrayProducts[index].stock = stock 
+                arrayProducts[index].category = category
+                
+
                
                 await this.saveFile(arrayProducts)
                 this.products =  arrayProducts
