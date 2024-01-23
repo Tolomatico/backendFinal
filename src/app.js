@@ -38,7 +38,7 @@ const httpServer=app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
-const io=socket(httpServer)
+const io= socket(httpServer)
 
 io.on("connection",(socket)=>{
     console.log("Cliente conectado")
