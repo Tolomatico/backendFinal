@@ -6,7 +6,7 @@ const ProductManager = require("../controllers/product-manager.js")
 const manager = new ProductManager("./src/models/products.json")
 
 
-router.get("/products/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     let id = parseInt(req.params.id);
 
     const productSearchedById = await manager.getProductById(id)
@@ -19,7 +19,7 @@ router.get("/products/:id", async (req, res) => {
 
 })
 
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
     let limit = parseInt(req.query.limit)
 
     const products = await manager.getProducts()
@@ -33,7 +33,7 @@ router.get("/products", async (req, res) => {
 
 })
 
-router.post("/products", async (req, res) => {
+router.post("/", async (req, res) => {
     const newProduct = req.body
 
     try {

@@ -29,8 +29,8 @@ app.post("/upload",upload.single("img"),(req,res)=>{
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use("/api/", productsRouter)
-app.use("/api/", cartsRouter)
+app.use("/api/products", productsRouter)
+app.use("/api/carts", cartsRouter)
 app.use("/", viewsRouter)
 app.use(express.static("./src/public"))
 
@@ -38,14 +38,36 @@ const httpServer=app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
-const io= socket(httpServer)
+const ProductManager = require("./controllers/product-manager")
 
-io.on("connection",(socket)=>{
+const manager = new ProductManager("./src/models/products.json")
+
+ const io= socket(httpServer)
+
+ let messages=[]
+
+ io.on("connection",async (socket)=>{
+
     console.log("Cliente conectado")
-    socket.on("message",(data)=>{
-        console.log(data)
-        io.sockets.emit("message",data)
-    })
+    socket.on("message", (data)=>{
+        messages.push(data)
+        io.emit("messagesLogs", messages)
+     })
+     
+ 
+     socket.emit("productos",await manager.getProducts())
+     socket.on("eliminarProducto", async (id)=>{
+        await manager.deleteProduct(id)
+        io.sockets.emit("productos", await manager.getProducts())
+     })
 
-    socket.emit("saludos","Hola como estas cliente")
-})
+     
+     socket.on("agregarProducto", async (newProduct)=>{
+        await manager.addProduct(newProduct)
+        io.sockets.emit("productos", await manager.getProducts())
+     })
+
+ })
+
+
+

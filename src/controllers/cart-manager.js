@@ -46,7 +46,7 @@ class CartManager {
     
                 if (productIndex !== -1) {
                    
-                    cartIdSearched.products[productIndex].quantity = quantity
+                    cartIdSearched.products[productIndex].quantity = cartIdSearched.products[productIndex].quantity + quantity
                 } else {
                     
                     cartIdSearched.products.push({

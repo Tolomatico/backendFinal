@@ -4,7 +4,7 @@ const router = express.Router()
 const CartManager = require("../controllers/cart-manager.js")
 const manager = new CartManager("./src/models/carts.json")
 
-router.get("/carts",async (req,res)=>{
+router.get("/",async (req,res)=>{
     try{
         const carts=await manager.getCarts()
         res.json(carts)
@@ -16,7 +16,7 @@ router.get("/carts",async (req,res)=>{
 
 })
 
-router.post("/carts", async(req,res)=>{
+router.post("/", async(req,res)=>{
     
     try {
      const newCart= await manager.newCart()
@@ -25,7 +25,7 @@ router.post("/carts", async(req,res)=>{
         res.status(500).send({ status: "error",  error })
 }})
 
-router.get("/carts/:id",async(req,res)=>{
+router.get("/:id",async(req,res)=>{
     let id=parseInt(req.params.id)
     const cartSearchedById= await manager.getCartById(id)
     if(cartSearchedById){
@@ -50,11 +50,5 @@ router.post("/:cid/product/:pid",async (req,res)=>{
     }
 
 })
-
-   
-
-
-
-
 
 module.exports = router
