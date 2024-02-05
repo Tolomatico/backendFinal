@@ -4,6 +4,7 @@ const PUERTO = 8080
 const exphbs = require("express-handlebars")
 const multer = require("multer")
 const socket=require("socket.io")
+const mongoose=require("mongoose")
 
 
 app.engine("handlebars", exphbs.engine())
@@ -38,9 +39,9 @@ const httpServer=app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
-const ProductManager = require("./controllers/product-manager")
+const ProductManager = require("./dao/fs/product-manager")
 
-const manager = new ProductManager("./src/models/products.json")
+const manager = new ProductManager("./src/dao/fs/products.json")
 
  const io= socket(httpServer)
 
@@ -68,6 +69,10 @@ const manager = new ProductManager("./src/models/products.json")
      })
 
  })
+
+ mongoose.connect("mongodb+srv://tolo:tolo1239@cluster0.9cp6ccu.mongodb.net/ecommerce?retryWrites=true&w=majority")
+ .then(()=>console.log("Conectado a la base de datos"))
+ .catch((error)=>console.log(error))
 
 
 

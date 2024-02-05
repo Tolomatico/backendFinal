@@ -1,13 +1,32 @@
 const express =require("express")
 const router=express.Router()
-const ProductManager = require("../controllers/product-manager.js")
-const manager = new ProductManager("./src/models/products.json")
+const ProductManager = require("../dao/fs/product-manager.js")
+const manager = new ProductManager("./dao/fs/products.json")
+
+const productsModel=require("../models/products.model.js")
 
 router.get("/",async (req,res)=>{
-    let products = await manager.getProducts()
+    // let products = await manager.getProducts()
+    const products= await productsModel.find()
+    const arrayProducts=products.map(product =>{
+        
+        return{
+            
+            id: product._id,
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            thumbnail: product.thumbnail,
+            code: product.code,
+            stock: product.stock,
+            status:product.status,
+            category:product.category
 
-
-    res.render("index",{products,title:"Productos"})
+        }    
+    })
+    console.log(arrayProducts)
+    
+    res.render("index",{arrayProducts,title:"Productos"})
 })
 
 router.get("/realtimeproducts",async (req,res)=>{

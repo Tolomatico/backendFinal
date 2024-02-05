@@ -1,9 +1,13 @@
 const express = require("express")
 const router = express.Router()
 
-const ProductManager = require("../controllers/product-manager.js")
+const ProductManager = require("../dao/fs/product-manager.js")
 
-const manager = new ProductManager("./src/models/products.json")
+const manager = new ProductManager("./src/dao/fs/products.json")
+
+const productsModel=require("../models/products.model.js")
+
+
 
 
 router.get("/:id", async (req, res) => {
@@ -20,16 +24,25 @@ router.get("/:id", async (req, res) => {
 })
 
 router.get("/", async (req, res) => {
-    let limit = parseInt(req.query.limit)
 
-    const products = await manager.getProducts()
-
-    if (limit) {
-        const productsLimit = products.slice(0, limit)
-        res.send(productsLimit)
-    } else {
-        res.send(products)
+    try {
+        const products= await productsModel.find()
+        res.json(products)
+    } catch (error) {
+        res.status(500).json({message:"Error en la base de datos"})
+        
     }
+
+    // let limit = parseInt(req.query.limit)
+
+    // const products = await manager.getProducts()
+
+    // if (limit) {
+    //     const productsLimit = products.slice(0, limit)
+    //     res.send(productsLimit)
+    // } else {
+    //     res.send(products)
+    // }
 
 })
 

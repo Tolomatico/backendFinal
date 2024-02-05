@@ -1,8 +1,8 @@
 const express = require("express")
 const router = express.Router()
 
-const CartManager = require("../controllers/cart-manager.js")
-const manager = new CartManager("./src/models/carts.json")
+const CartManager = require("../dao/fs/cart-manager.js")
+const manager = new CartManager("./src/dao/fs/carts.json")
 
 router.get("/",async (req,res)=>{
     try{
