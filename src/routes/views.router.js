@@ -6,7 +6,7 @@ const manager = new ProductManager("./dao/fs/products.json")
 const productsModel=require("../models/products.model.js")
 
 router.get("/",async (req,res)=>{
-    // let products = await manager.getProducts()
+   
     const products= await productsModel.find()
     const arrayProducts=products.map(product =>{
         
@@ -24,7 +24,7 @@ router.get("/",async (req,res)=>{
 
         }    
     })
-    console.log(arrayProducts)
+   
     
     res.render("index",{arrayProducts,title:"Productos"})
 })

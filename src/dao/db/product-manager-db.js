@@ -1,21 +1,16 @@
-const productsModel=require("../models/products.model.js")
+const productsModel=require("../../models/products.model.js")
 
 class ProductManager {
 
-    static ItemId = 1
 
-    constructor(path) {
-        this.products = [],
-            this.path = path
-    }
 
     async addProduct(product) {
 
         
-        let { title, description, price, thumbnail, code, stock,status,category } = product
+        let { title, description, price, thumbnail, code, stock,status,category,img } = product
 
 
-        if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category) {
+        if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img) {
             console.log("Existen campos vacios,por favor, completarlos")
             return
         }
@@ -55,7 +50,7 @@ class ProductManager {
     async getProductById(id) {
 
         try {
-            const product=await productsModel.findByid(id)
+            const product=await productsModel.findById(id)
             if(product){
                 return product
             }else{
@@ -96,7 +91,6 @@ class ProductManager {
                 return null
             }
             console.log("Producto eliminado con éxito")
-                return updated
             } catch (error) {
                console.log("Error al eliminar producto",error)
             }

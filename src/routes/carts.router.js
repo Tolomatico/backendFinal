@@ -1,8 +1,8 @@
 const express = require("express")
 const router = express.Router()
 
-const CartManager = require("../dao/fs/cart-manager.js")
-const manager = new CartManager("./src/dao/fs/carts.json")
+const CartManager = require("../dao/db/cart-manager-db.js")
+const manager = new CartManager()
 
 router.get("/",async (req,res)=>{
     try{
@@ -26,7 +26,7 @@ router.post("/", async(req,res)=>{
 }})
 
 router.get("/:id",async(req,res)=>{
-    let id=parseInt(req.params.id)
+    let id=req.params.id
     const cartSearchedById= await manager.getCartById(id)
     if(cartSearchedById){
         res.send(cartSearchedById)

@@ -16,7 +16,7 @@ const renderProducts =  (productos) => {
             productCard.classList.add("card")
             productCard.innerHTML = `
             <img class="img" src="sin imagen"/> 
-            <p>Id :${element.id}</p>
+            <p>Id :${element._id}</p>
             <p>${element.title}</p>
             <p>Precio:$${element.price}</p>
             <button class="eliminarProducto">Eliminar producto</button>
@@ -24,7 +24,7 @@ const renderProducts =  (productos) => {
             div.appendChild(productCard)
     
             productCard.querySelector("button").addEventListener("click", () => {
-                eliminarProducto(element.id)
+                eliminarProducto(element._id)
     
             })
         })

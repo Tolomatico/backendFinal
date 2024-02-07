@@ -39,19 +39,24 @@ const httpServer=app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
-const ProductManager = require("./dao/fs/product-manager")
+const ProductManager = require("./dao/db/product-manager-db.js")
 
-const manager = new ProductManager("./src/dao/fs/products.json")
+const manager = new ProductManager()
+
+const messagesModel=require("./models/messages.model.js")
 
  const io= socket(httpServer)
-
- let messages=[]
 
  io.on("connection",async (socket)=>{
 
     console.log("Cliente conectado")
-    socket.on("message", (data)=>{
-        messages.push(data)
+
+    socket.on("message", async (data)=>{
+
+        await messagesModel.create(data)
+
+        const messages= await messagesModel.find()
+
         io.emit("messagesLogs", messages)
      })
      
