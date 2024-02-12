@@ -51,4 +51,62 @@ router.post("/:cid/product/:pid",async (req,res)=>{
 
 })
 
+ router.delete("/:cid/products/:pid", async (req,res)=>{
+         const cid = req.params.cid
+         const pid= req.params.pid
+
+         
+         try {
+            const productTodelete= await manager.deleteProductFromCart(cid,pid)
+            res.send(productTodelete)
+         } catch (error) {
+            console.log("Error al borrar el producto",error)
+         }
+ })
+
+router.delete("/:cid", async (req,res)=>{
+    const cid =req.params.cid
+    
+    try {
+        const cartDeleted= await manager.deleteCart(cid)
+        res.send(cartDeleted)
+    } catch (error) {
+        console.log("Error al intentar borrar el carrito")
+    }
+
+})
+
+router.put("/:cid", async (req,res)=>{
+    const cid = req.params.cid
+    const products=req.body
+   
+    try {
+         const updateProducts= await manager.updateProductsFromCart(cid,products)
+         res.send(updateProducts)
+        
+    } catch (error) {
+        console.log("Error al querer agregar productos",error)
+    }
+
+})
+
+router.put("/:cid/products/:pid", async (req,res)=>{
+    const cid=req.params.cid
+    const pid=req.params.pid
+    const quantity=req.body.quantity 
+    
+    try {
+         const productQuantityModified= await manager.updateCartProduct(cid,pid,quantity)
+         res.send(productQuantityModified)
+        
+    } catch (error) {
+        console.log("Error al querer modificar la cantidad del producto",error)
+    }
+
+}
+)
+
+
+
+
 module.exports = router

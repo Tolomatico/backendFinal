@@ -1,23 +1,32 @@
 <h1>{{title}}</h1>
 
-{{#if arrayProducts.length }}
+{{#if products.length }}
 
 <section class="container">
-{{#each arrayProducts}}
-{{#if status}}
+{{#each products}}
+{{#if this.status}}
 <div class="card">
 
     
-    <img class="img" src={{thumbnail}} />
-    <p>{{title}}</p>
-    <p>${{price}}</p>
-    <p>stock:{{stock}}</p>
+    <img class="img" src={{this.thumbnail}} />
+    <p>{{this.title}}</p>
+    <p>${{this.price}}</p>
+    <p>stock:{{this.stock}}</p>
+    <button>Agregar al carrito</button>
     
 
 </div>
 {{/if}}
 {{/each}}
 </section>
+{{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}"> Anterior</a>
+{{/if}}
+{{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}"> Siguiente</a>
+{{/if}}
+
+<p>Pagina {{currentPage}} de {{totalPages}}</p>
 
 {{else}}
 <p>No hay productos disponibles.</p>
@@ -27,7 +36,3 @@
 
 
 
-{{!-- <script src="https://cdn.socket.io/4.7.3/socket.io.min.js"
-    integrity="sha384-+miq58Ltmjm+SSP5g8Ok6dpMO/6R4n8xe/x1Yj0Bdb9kiEz25LTnWv/GZQTRQamg"
-    crossorigin="anonymous"></script>
-<script src="js/index.js"></script> --}}

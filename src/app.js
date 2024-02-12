@@ -36,7 +36,7 @@ app.use("/", viewsRouter)
 app.use(express.static("./src/public"))
 
 const httpServer=app.listen(PUERTO, () => {
-    console.log(`Escuchando en http://localhost:${PUERTO}`)
+    console.log(`Escuchando en http://localhost:${PUERTO}/products`)
 })
 
 const ProductManager = require("./dao/db/product-manager-db.js")

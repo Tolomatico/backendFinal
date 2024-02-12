@@ -1,38 +1,72 @@
-const express =require("express")
-const router=express.Router()
-const ProductManager = require("../dao/fs/product-manager.js")
-const manager = new ProductManager("./dao/fs/products.json")
+const express = require("express")
+const router = express.Router()
+const CartManager = require("../dao/db/cart-manager-db.js")
+const manager = new CartManager()
 
-const productsModel=require("../models/products.model.js")
+const productsModel = require("../models/products.model.js")
+const cartsModel = require("../models/carts.model.js")
 
-router.get("/",async (req,res)=>{
-   
-    const products= await productsModel.find()
-    const arrayProducts=products.map(product =>{
-        
-        return{
-            
-            id: product._id,
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            thumbnail: product.thumbnail,
-            code: product.code,
-            stock: product.stock,
-            status:product.status,
-            category:product.category
+router.get("/products", async (req, res) => {
 
-        }    
-    })
-   
-    
-    res.render("index",{arrayProducts,title:"Productos"})
+    const page = req.query.page || 1
+    const limit = req.query.limit || 2
+
+
+    try {
+        const products = await productsModel.paginate({}, { limit, page })
+        const arrayProducts = products.docs.map(product => {
+            const { _id, ...rest } = product.toObject()
+            return rest
+        })
+
+        res.render("index", {
+            products: arrayProducts,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            currentPage: products.page,
+            totalPages: products.totalPages,
+            title: "Productos"
+        })
+
+    } catch (error) {
+        console.log("Error al solicitar los productos", error)
+    }
+
+
 })
 
-router.get("/realtimeproducts",async (req,res)=>{
-    
+router.get("/carts/:id", async (req, res) => {
+    const id = req.params.id
+
     try {
-        res.render("realTimeProducts",{title:"Productos actualizados en tiempo real"})
+        const cart = await manager.getCartById(id)
+        const cartMap = {
+            _id: cart._id,
+            products: cart.products.map(product => ({
+                _id: product._id,
+                quantity: product.quantity
+            }))
+        }
+
+        console.log(cartMap)
+        res.render("carts", {
+            cart: cartMap
+        }
+        )
+ 
+    } catch (error) {
+        console.log("Error al encontrar el carrito", error)
+    }
+
+
+})
+
+router.get("/realtimeproducts", async (req, res) => {
+
+    try {
+        res.render("realTimeProducts", { title: "Productos actualizados en tiempo real" })
 
     } catch (error) {
         res.status(500).json({
@@ -42,7 +76,7 @@ router.get("/realtimeproducts",async (req,res)=>{
 
 })
 
-router.get("/chat", async (req,res)=>{
+router.get("/chat", async (req, res) => {
 
     try {
         res.render("chat")
@@ -54,4 +88,4 @@ router.get("/chat", async (req,res)=>{
 
 })
 
-module.exports=router
+module.exports = router
