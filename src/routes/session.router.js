@@ -37,7 +37,7 @@ router.get("/logout", (req, res) => {
         req.session.destroy()
         
     }
-    res.redirect("/products")
+    res.redirect("/login")
 
 })
 
