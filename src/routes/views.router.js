@@ -88,4 +88,49 @@ router.get("/chat", async (req, res) => {
 
 })
 
+router.get("/register",async (req,res)=>{
+    try {
+        if(req.session.login){
+
+           return res.redirect("/products")
+        }
+        res.render("register")
+    
+    } catch (error) {
+        res.status(500).json({
+            error: "Error interno del servidor"
+        })
+    }
+   
+})
+
+router.get("/login", async (req,res)=>{
+    try {
+        if(req.session.login){
+          return  res.redirect("/products")
+        }
+        res.render("login")
+    
+    } catch (error) {
+        res.status(500).json({
+            error: "Error interno del servidor"
+        })
+    }
+
+
+})
+
+router.get("/profile", async (req,res)=>{
+
+    try {
+            const user=req.session.user
+            res.render("profile",{user})
+            
+    } catch (error) {
+        console.log(error)
+    }
+
+
+})
+
 module.exports = router
