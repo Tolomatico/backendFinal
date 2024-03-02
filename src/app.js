@@ -10,6 +10,8 @@ const session = require("express-session")
 const FileStore = require("session-file-store")
 const fileStore = FileStore(session)
 const MongoStore = require("connect-mongo")
+const passport=require("passport")
+const initilizePassport=require("./config/passport.config.js")
 
 app.engine("handlebars", exphbs.engine())
 app.set("view engine", "handlebars")
@@ -46,6 +48,9 @@ app.use(session({
         
     })
 }))
+initilizePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
