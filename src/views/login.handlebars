@@ -1,11 +1,26 @@
 <form action="/api/sessions/sessionlogin" method="POST" enctype="application/x-www-form-urlencoded">
     <legend>Inicia sesión para continuar</legend>
-   
+
     <input type="mail" placeholder="email" name="email">
     <input type="password" placeholder="password" name="password">
-    
+
     <input type="submit" value="Ingresar">
     <p>{{error}}</p>
 </form>
-
-<a href="/api/sessions/github">Ingresar con github</a>
+<a href="/api/sessions/github">
+    <div class="w-40 flex-col   border-solid my-10 border-2 border-black rounded-lg ">
+        <ion-icon class="text-4xl w-full" name="logo-github"></ion-icon>
+        <p class="font-bold ">Ingresar con github</p>
+    </div>
+    
+</a>
+<a href="/api/sessions/facebook">
+   <div class="w-40 flex-col   border-solid my-10 border-2 border-black rounded-lg ">
+        <ion-icon class="text-4xl w-full" name="logo-facebook"></ion-icon>
+        <p class="font-bold ">Ingresar con facebook</p>
+    </div>
+    
+</a>
+ 
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

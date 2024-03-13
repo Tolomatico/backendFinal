@@ -45,12 +45,11 @@ app.use(session({
     saveUninitialized: true,
     store: MongoStore.create({
         mongoUrl: "mongodb+srv://tolo:tolo1239@cluster0.9cp6ccu.mongodb.net/ecommerce?retryWrites=true&w=majority"
-        
     })
 }))
 initilizePassport()
 app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.session()) 
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

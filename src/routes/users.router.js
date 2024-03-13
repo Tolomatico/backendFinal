@@ -3,6 +3,7 @@ const router = express.Router()
 const usersModel = require("../models/users.model")
 const {createHash} =require("../utils/hashBcrypt")
 const passport  = require("passport")
+const generateToken = require("../utils/jsonwebtoken")
 
 /*
 router.post("/", async (req, res) => {
@@ -40,13 +41,39 @@ router.post("/", async (req, res) => {
 })
 */
 
+        /// Registro con JSON Web Token ///
+
+// router.post("/",async (req,res)=>{
+//     const {first_name,last_name,age,password ,email}=req.body
+// try {
+//     const user= await usersModel.findOne({email:email})
+//     if(user){
+//         return res.status(400).send({error:"Ya existe un usuario con ese email"})
+//     }
+//     const newUser= await usersModel.create({
+//         first_name,
+//         last_name,
+//         email,
+//         age,
+//         password:createHash(password.toString())
+//     })
+
+//     const token=generateToken({id:newUser._id})
+//     res.status(200).send({status:"success",token})
+    
+// } catch (error) {
+//     return res.status(400).send({status:"error",message:"Credenciales invalidas"})
+// }
+
+// })
+
         /// passport register ///
 
 router.post("/",passport.authenticate("register",{
         failureRedirect:"/failedregister"
 }),async(req,res)=>{
     if(!req.user){
-        return res.status(400).send({status:"error",message:"Credenciales invalidas"})
+        return res.status(401).send({status:"error",message:"Credenciales invalidas"})
     }
 
     req.session.user={

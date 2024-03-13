@@ -6,6 +6,10 @@ const manager = new CartManager()
 const productsModel = require("../models/products.model.js")
 const cartsModel = require("../models/carts.model.js")
 
+router.get("/", async (req,res)=>{
+    res.render("index",{user:req.session.user})
+})
+
 router.get("/products", async (req, res) => {
 
     const page = req.query.page || 1
@@ -19,7 +23,7 @@ router.get("/products", async (req, res) => {
             return rest
         })
 
-        res.render("index", {
+        res.render("products", {
             products: arrayProducts,
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
@@ -27,7 +31,8 @@ router.get("/products", async (req, res) => {
             nextPage: products.nextPage,
             currentPage: products.page,
             totalPages: products.totalPages,
-            title: "Productos"
+            title: "Productos",
+           
         })
 
     } catch (error) {
@@ -55,7 +60,7 @@ router.get("/carts/:id", async (req, res) => {
             cart: cartMap
         }
         )
- 
+
     } catch (error) {
         console.log("Error al encontrar el carrito", error)
     }
@@ -88,29 +93,29 @@ router.get("/chat", async (req, res) => {
 
 })
 
-router.get("/register",async (req,res)=>{
+router.get("/register", async (req, res) => {
     try {
-        if(req.session.login){
+        if (req.session.login) {
 
-           return res.redirect("/products")
+            return res.redirect("/products")
         }
         res.render("register")
-    
+
     } catch (error) {
         res.status(500).json({
             error: "Error interno del servidor"
         })
     }
-   
+
 })
 
-router.get("/login", async (req,res)=>{
+router.get("/login", async (req, res) => {
     try {
-        if(req.session.login){
-          return  res.redirect("/products")
+        if (req.session.login) {
+            return res.redirect("/products")
         }
         res.render("login")
-    
+
     } catch (error) {
         res.status(500).json({
             error: "Error interno del servidor"
@@ -120,17 +125,14 @@ router.get("/login", async (req,res)=>{
 
 })
 
-router.get("/profile", async (req,res)=>{
+router.get("/profile", async (req, res) => {
 
-    try {
-            const user=req.session.user
-            res.render("profile",{user})
-            
-    } catch (error) {
-        console.log(error)
-    }
+    if(req.session.user){
+      res.render("profile",{user:req.session.user})
+    }else res.redirect("/login")
+         
+  })
+  
 
-
-})
 
 module.exports = router

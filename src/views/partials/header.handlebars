@@ -1,16 +1,40 @@
-<header class="bg-blue-900 flex  p-10 gap-5">
+<header>
 
-       
-        <div class="w-2/3 flex  space-x-10">
-        <a class="text-3xl font-bold text-white" href="/products">Productos</a>
-        <a class="text-3xl font-bold text-white" href="/realtimeproducts">Actualización de productos</a>
-        <a class="text-3xl font-bold text-white" href="/chat">Chat</a>
-       </div>
-       <div  class="w-1/3 flex space-x-10">
-        <a class="text-3xl font-bold text-white" href="/login">Iniciar sesión</a>
-        <a class="text-3xl font-bold text-white" href="/register">Ingresar</a>
-        <a class="text-3xl font-bold text-white" href="/profile">Mi perfil</a>
-        </div>
-      
-        
+        <nav class="bg-blue-900 flex p-12">
+                <ul class="flex w-2/3 gap-10">
+                        <li> <a class="text-3xl font-bold text-white" href="/products">Productos</a></li>
+                        <li><a class="text-3xl font-bold text-white" href="/realtimeproducts">Actualización de
+                                        productos</a></li>
+                        <li> <a class="text-3xl font-bold text-white" href="/chat">Chat</a></li>
+                </ul>
+                <ul class="flex w-1/3 gap-10">
+                        {{#if user}}
+                        <li> <a class="text-3xl font-bold text-white" href="/profile">Hola {{user.first_name}}</a></li>
+                        <li> <a class="text-3xl font-bold text-white" href="/api/sessions/logout">Cerrar sesión</a></li>
+                        {{else}}
+                        <li><a class="text-3xl font-bold text-white" href="/login">Iniciar sesión</a></li>
+                        <li> <a class="text-3xl font-bold text-white" href="/register">Ingresar</a></li>
+
+                        {{/if}}
+                </ul>
+
+        </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </header>
+
+{{!-- <a class="text-3xl font-bold text-white" href="/profile">Mi perfil</a> --}}

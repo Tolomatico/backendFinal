@@ -8,11 +8,10 @@ const usersSchema= new mongoose.Schema({
     },
     last_name:{
         type:String,
-        required:true
+        
     },
     email:{
         type:String,
-        required:true,
         unique:true,
         index:true
     },
@@ -26,7 +25,19 @@ const usersSchema= new mongoose.Schema({
     },
     rol:{
         type:String,
+        default:"user"
 
+    },
+    cart:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"carts"
+
+    },
+    accountId:{
+        type:String,
+    },
+    provider:{
+        type:String
     }
 
 })
