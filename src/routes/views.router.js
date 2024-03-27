@@ -2,22 +2,28 @@ const express = require("express")
 const router = express.Router()
 const CartManager = require("../dao/db/cart-manager-db.js")
 const manager = new CartManager()
-
+const ProductManager = require("../dao/db/product-manager-db.js")
+const productManager = new ProductManager()
 const productsModel = require("../models/products.model.js")
 const cartsModel = require("../models/carts.model.js")
 
-router.get("/", async (req,res)=>{
-    res.render("index",{user:req.session.user})
+const response = require("../utils/reusables.js")
+
+
+router.get("/", async (req, res) => {
+    res.render("index", { user: req.session.user })
 })
 
 router.get("/products", async (req, res) => {
 
-    const page = req.query.page || 1
-    const limit = req.query.limit || 2
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 2
 
 
     try {
         const products = await productsModel.paginate({}, { limit, page })
+        // const products = await productManager.getProducts({page:parseInt(page),limit:parseInt(limit)})
+
         const arrayProducts = products.docs.map(product => {
             const { _id, ...rest } = product.toObject()
             return rest
@@ -32,11 +38,12 @@ router.get("/products", async (req, res) => {
             currentPage: products.page,
             totalPages: products.totalPages,
             title: "Productos",
-           
+            user: req.session.user
         })
 
+
     } catch (error) {
-        console.log("Error al solicitar los productos", error)
+        response(res,500,`Error al obtener los productos: ${error}`)
     }
 
 
@@ -54,15 +61,13 @@ router.get("/carts/:id", async (req, res) => {
                 quantity: product.quantity
             }))
         }
-
-        console.log(cartMap)
         res.render("carts", {
             cart: cartMap
         }
         )
 
     } catch (error) {
-        console.log("Error al encontrar el carrito", error)
+        response(res,500,`Error al obtener el carrito: ${error}`)
     }
 
 
@@ -71,12 +76,13 @@ router.get("/carts/:id", async (req, res) => {
 router.get("/realtimeproducts", async (req, res) => {
 
     try {
-        res.render("realTimeProducts", { title: "Productos actualizados en tiempo real" })
+        res.render("realTimeProducts", {
+            title: "Productos actualizados en tiempo real",
+            user: req.session.user
+        })
 
     } catch (error) {
-        res.status(500).json({
-            error: "Error interno del servidor"
-        })
+        response(res,500,`Error al obtener los productos: ${error}`)
     }
 
 })
@@ -86,9 +92,7 @@ router.get("/chat", async (req, res) => {
     try {
         res.render("chat")
     } catch (error) {
-        res.status(500).json({
-            error: "Error interno del servidor"
-        })
+        response(res,500,`Error al ingresar al chat: ${error}`)
     }
 
 })
@@ -102,9 +106,7 @@ router.get("/register", async (req, res) => {
         res.render("register")
 
     } catch (error) {
-        res.status(500).json({
-            error: "Error interno del servidor"
-        })
+        response(res,500,`Error al intentar registrarse: ${error}`)
     }
 
 })
@@ -117,9 +119,7 @@ router.get("/login", async (req, res) => {
         res.render("login")
 
     } catch (error) {
-        res.status(500).json({
-            error: "Error interno del servidor"
-        })
+        response(res,500,`Error al intentar registrarse: ${error}`)
     }
 
 
@@ -127,12 +127,12 @@ router.get("/login", async (req, res) => {
 
 router.get("/profile", async (req, res) => {
 
-    if(req.session.user){
-      res.render("profile",{user:req.session.user})
-    }else res.redirect("/login")
-         
-  })
-  
+    if (req.session.user) {
+        res.render("profile", { user: req.session.user })
+    } else res.redirect("/login")
+
+})
+
 
 
 module.exports = router

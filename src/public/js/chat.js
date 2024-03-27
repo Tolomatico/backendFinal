@@ -31,6 +31,7 @@ Swal.fire({
     input:"text",
     text:"Ingresar mail",
    inputValidator:(value)=>{
+    
        return !value && "Ingresa tu mail para continuar"
    },
    allowOutsideClick:false

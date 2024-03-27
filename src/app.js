@@ -1,3 +1,5 @@
+        /// Importación de dependencias ///
+
 const express = require("express")
 const app = express()
 const PUERTO = 8080
@@ -12,10 +14,17 @@ const fileStore = FileStore(session)
 const MongoStore = require("connect-mongo")
 const passport=require("passport")
 const initilizePassport=require("./config/passport.config.js")
+const configObject=require("./config/config.js")
+const {mongo_url,secretKey}=configObject
+const cors=require("cors")
+
+        /// Configuración Handlebars ///
 
 app.engine("handlebars", exphbs.engine())
 app.set("view engine", "handlebars")
 app.set("views", "./src/views")
+
+        /// Importación de rutas ///
 
 const productsRouter = require("./routes/products.router")
 const cartsRouter = require("./routes/carts.router")
@@ -23,6 +32,7 @@ const viewsRouter = require("./routes/views.router")
 const usersRouter = require("./routes/users.router")
 const sessionRouter = require("./routes/session.router.js")
 
+        /// Configuración de Multer ///
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "./src/public/img")
@@ -31,20 +41,18 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
-
 const upload = multer({ storage })
-
 app.post("/upload", upload.single("img"), (req, res) => {
     res.send("Subido con exito")
 })
 
 
 app.use(session({
-    secret: "secretCoder",
+    secret: secretKey,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://tolo:tolo1239@cluster0.9cp6ccu.mongodb.net/ecommerce?retryWrites=true&w=majority"
+        mongoUrl: mongo_url
     })
 }))
 initilizePassport()
@@ -60,23 +68,20 @@ app.use("/api/sessions", sessionRouter)
 app.use("/", viewsRouter)
 app.use(express.static("./src/public"))
 app.use(cookieParser())
+app.use(cors())
 
 
 const httpServer = app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}/products`)
 })
 
+
 const ProductManager = require("./dao/db/product-manager-db.js")
-
 const manager = new ProductManager()
-
 const messagesModel = require("./models/messages.model.js")
-
 const io = socket(httpServer)
 
 io.on("connection", async (socket) => {
-
-    console.log("Cliente conectado")
 
     socket.on("message", async (data) => {
 
@@ -102,11 +107,9 @@ io.on("connection", async (socket) => {
 
 })
 
-//  Conexion a MONGO DB //
+//  Conexion a MONGO DB //}
 
-mongoose.connect("mongodb+srv://tolo:tolo1239@cluster0.9cp6ccu.mongodb.net/ecommerce?retryWrites=true&w=majority")
-    .then(() => console.log("Conectado a la base de datos"))
-    .catch((error) => console.log(error))
+require("./database.js")
 
 
 

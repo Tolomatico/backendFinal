@@ -105,7 +105,6 @@ router.get("/faillogin", async (req, res) => {
 router.get("/logout", (req, res) => {
     if (req.session.login) {
         req.session.destroy()
-
     }
     res.redirect("/login")
 
