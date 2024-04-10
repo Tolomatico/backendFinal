@@ -1,4 +1,4 @@
-        /// Importación de dependencias ///
+/// Importación de dependencias ///
 
 const express = require("express")
 const app = express()
@@ -6,25 +6,28 @@ const PUERTO = 8080
 const exphbs = require("express-handlebars")
 const multer = require("multer")
 const socket = require("socket.io")
-const mongoose = require("mongoose")
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
-const FileStore = require("session-file-store")
-const fileStore = FileStore(session)
 const MongoStore = require("connect-mongo")
-const passport=require("passport")
-const initilizePassport=require("./config/passport.config.js")
-const configObject=require("./config/config.js")
-const {mongo_url,secretKey}=configObject
-const cors=require("cors")
+const passport = require("passport")
+const initilizePassport = require("./config/passport.config.js")
+const configObject = require("./config/config.js")
+const { mongo_url, secretKey } = configObject
+const cors = require("cors")
+const authMiddleware = require("./middleware/authmiddleware.js")
 
-        /// Configuración Handlebars ///
+///  Conexion a MONGO DB ///
+
+require("./database.js")
+
+
+/// Configuración Handlebars ///
 
 app.engine("handlebars", exphbs.engine())
 app.set("view engine", "handlebars")
 app.set("views", "./src/views")
 
-        /// Importación de rutas ///
+/// Importación de rutas ///
 
 const productsRouter = require("./routes/products.router")
 const cartsRouter = require("./routes/carts.router")
@@ -32,7 +35,7 @@ const viewsRouter = require("./routes/views.router")
 const usersRouter = require("./routes/users.router")
 const sessionRouter = require("./routes/session.router.js")
 
-        /// Configuración de Multer ///
+/// Configuración de Multer ///
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "./src/public/img")
@@ -47,28 +50,23 @@ app.post("/upload", upload.single("img"), (req, res) => {
 })
 
 
-app.use(session({
-    secret: secretKey,
-    resave: true,
-    saveUninitialized: true,
-    store: MongoStore.create({
-        mongoUrl: mongo_url
-    })
-}))
+app.use(cookieParser())
 initilizePassport()
 app.use(passport.initialize())
-app.use(passport.session()) 
 
+       ///  AuthMiddleware  ///
+
+app.use(authMiddleware)
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static("./src/public"))
 app.use("/api/products", productsRouter)
 app.use("/api/carts", cartsRouter)
 app.use("/api/users", usersRouter)
 app.use("/api/sessions", sessionRouter)
 app.use("/", viewsRouter)
-app.use(express.static("./src/public"))
-app.use(cookieParser())
-app.use(cors())
+
 
 
 const httpServer = app.listen(PUERTO, () => {
@@ -107,9 +105,8 @@ io.on("connection", async (socket) => {
 
 })
 
-//  Conexion a MONGO DB //}
+// Mailing ///
 
-require("./database.js")
 
 
 

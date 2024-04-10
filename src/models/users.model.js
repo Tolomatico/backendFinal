@@ -17,7 +17,7 @@ const usersSchema= new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true,
+        //required:true,
     },
     age:{
         type:Number,
@@ -25,12 +25,13 @@ const usersSchema= new mongoose.Schema({
     },
     rol:{
         type:String,
+        enum:['admin', 'user'],
         default:"user"
 
     },
     cart:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"carts"
+        ref:"cart"
 
     },
     accountId:{

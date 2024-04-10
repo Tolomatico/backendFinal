@@ -6,48 +6,20 @@ const ProductManager = require("../dao/db/product-manager-db.js")
 const productManager = new ProductManager()
 const productsModel = require("../models/products.model.js")
 const cartsModel = require("../models/carts.model.js")
-
+const passport=require("passport")
 const response = require("../utils/reusables.js")
 
-
-router.get("/", async (req, res) => {
-    res.render("index", { user: req.session.user })
-})
-
-router.get("/products", async (req, res) => {
-
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 2
+const  UserController=require("../controllers/user.controller.js")
+const userController=new UserController()
+const  ViewController=require("../controllers/view.controller.js")
+const viewController=new ViewController()
 
 
-    try {
-        const products = await productsModel.paginate({}, { limit, page })
-        // const products = await productManager.getProducts({page:parseInt(page),limit:parseInt(limit)})
 
-        const arrayProducts = products.docs.map(product => {
-            const { _id, ...rest } = product.toObject()
-            return rest
-        })
-
-        res.render("products", {
-            products: arrayProducts,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.hasNextPage,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            currentPage: products.page,
-            totalPages: products.totalPages,
-            title: "Productos",
-            user: req.session.user
-        })
-
-
-    } catch (error) {
-        response(res,500,`Error al obtener los productos: ${error}`)
-    }
-
-
-})
+router.get("/",viewController.renderHome)
+router.get("/register",viewController.renderRegister)
+router.get("/login", viewController.renderLogin)
+router.get("/products",viewController.renderProducts)
 
 router.get("/carts/:id", async (req, res) => {
     const id = req.params.id
@@ -73,19 +45,7 @@ router.get("/carts/:id", async (req, res) => {
 
 })
 
-router.get("/realtimeproducts", async (req, res) => {
-
-    try {
-        res.render("realTimeProducts", {
-            title: "Productos actualizados en tiempo real",
-            user: req.session.user
-        })
-
-    } catch (error) {
-        response(res,500,`Error al obtener los productos: ${error}`)
-    }
-
-})
+router.get("/realtimeproducts", viewController.renderRealTimeProducts)
 
 router.get("/chat", async (req, res) => {
 
@@ -97,41 +57,38 @@ router.get("/chat", async (req, res) => {
 
 })
 
-router.get("/register", async (req, res) => {
+
+
+
+
+
+
+ const transport=require("../config/transport.js")
+
+
+router.get("/mailing", async (req,res)=>{
     try {
-        if (req.session.login) {
-
-            return res.redirect("/products")
-        }
-        res.render("register")
-
+        await transport.sendMail({
+            from:"Tomás Ballesty <ballesty.t@gmail.com",
+            to:"tolomagnanimo@gmail.com",
+            subject:"Correo de prueba",
+            html:`<h1>Prueba de mail</h1>`,
+            attachments:[{
+                filename:"coca.webp",
+                path:"./src/public/img/coca.webp",
+                cid:"coca"
+            }]
+        })
+        response(res,200,"Correo enviado")
+        
     } catch (error) {
-        response(res,500,`Error al intentar registrarse: ${error}`)
+        response(res,500,`Error al enviar mail: ${error}`)
     }
-
 })
 
-router.get("/login", async (req, res) => {
-    try {
-        if (req.session.login) {
-            return res.redirect("/products")
-        }
-        res.render("login")
 
-    } catch (error) {
-        response(res,500,`Error al intentar registrarse: ${error}`)
-    }
+ 
 
-
-})
-
-router.get("/profile", async (req, res) => {
-
-    if (req.session.user) {
-        res.render("profile", { user: req.session.user })
-    } else res.redirect("/login")
-
-})
 
 
 

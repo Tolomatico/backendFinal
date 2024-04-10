@@ -1,16 +1,20 @@
 const passport = require("passport")
 const local = require("passport-local")
 const GitHubStrategy = require("passport-github2")
-const FacebookStrategy=require("passport-facebook").Strategy
+const FacebookStrategy = require("passport-facebook").Strategy
 const usersModel = require("../models/users.model")
 const { createHash, isValidPassword } = require("../utils/hashBcrypt")
 const jwt = require("passport-jwt")
-
 const JWTStrategy = jwt.Strategy
 const ExtractJwt = jwt.ExtractJwt
 const LocalStrategy = local.Strategy
+const configObject = require("./config.js")
+const { secretKey } = configObject
 
 const initilizePassport = () => {
+
+    /// Register Strategy ///
+
     passport.use("register", new LocalStrategy({
         passReqToCallback: true,
         usernameField: "email"
@@ -38,6 +42,9 @@ const initilizePassport = () => {
         }
 
     }))
+
+    /// Login Strategy ///
+
     passport.use("login", new LocalStrategy({
         usernameField: "email"
     }, async (email, password, done) => {
@@ -60,13 +67,7 @@ const initilizePassport = () => {
     }
     ))
 
-    passport.serializeUser((user, done) => {
-        done(null, user._id)
-    })
-    passport.deserializeUser(async (id, done) => {
-        let user = await usersModel.findById({ _id: id })
-        done(null, user)
-    })
+
 
     /// Github strategy ///
 
@@ -76,7 +77,7 @@ const initilizePassport = () => {
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
 
     }, async (accessToken, refreshToken, profile, done) => {
-       
+
         const name = profile._json.name.split(" ")
 
         try {
@@ -104,68 +105,84 @@ const initilizePassport = () => {
         }
     }))
 
+    /// Facebook Strategy ///
+
     passport.use(new FacebookStrategy({
-        clientID:748905424001448,
-        clientSecret:"8d4aa4796fae63e2b1347e90878dac92",
-        callbackURL:"http://localhost:8080/api/sessions/facebook/callback"
-},async(accessToken,refreshToken,profile,done)=>{
-    
-    const name = profile.displayName.split(" ")
-    
-    try {
+        clientID: 748905424001448,
+        clientSecret: "8d4aa4796fae63e2b1347e90878dac92",
+        callbackURL: "http://localhost:8080/api/sessions/facebook/callback"
+    }, async (accessToken, refreshToken, profile, done) => {
 
-        let user = await usersModel.findOne({ 
-            accountId: profile.id,
-            provider:"facebook"
-         })
-        if (!user) {
+        const name = profile.displayName.split(" ")
 
-            let newUser = {
-                first_name: name[0],
-                last_name: name[1],
-                email: "",
-                password: createHash(profile.id.toString()),
-                age: 18,
-                rol: "user",
-                accountId:profile.id,
-                provider:"facebook"
+        try {
+
+            let user = await usersModel.findOne({
+                accountId: profile.id,
+                provider: "facebook"
+            })
+            if (!user) {
+
+                let newUser = {
+                    first_name: name[0],
+                    last_name: name[1],
+                    email: "",
+                    password: createHash(profile.id.toString()),
+                    age: 18,
+                    rol: "user",
+                    accountId: profile.id,
+                    provider: "facebook"
+                }
+
+                let result = await usersModel.create(newUser)
+                done(null, result)
+            } else {
+                done(null, user)
             }
-            
-            let result = await usersModel.create(newUser)
-            done(null, result)
-        } else {
-            done(null, user)
+
+
+        } catch (error) {
+            return done(error)
         }
-
-
-    } catch (error) {
-        return done(error)
     }
-}
+    ))
 
+    /// Serialize and Deserialize ///
 
-))
+    passport.serializeUser((user, done) => {
+        done(null, user._id)
+    })
+    passport.deserializeUser(async (id, done) => {
+        let user = await usersModel.findById({ _id: id })
+        done(null, user)
+    })
 
-    // passport.use("jwt", new JWTStrategy({
-    //     jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-    //     secretOrKey: "secretkey"
-    // }, async (jwt_payload, done) => {
-    //     try {
-    //         return done(null, jwt_payload)
-    //     } catch (error) {
-    //         return done(error)
-    //     }
-    // }))
-    
+    /// JWT Strategy ///
+
+    passport.use("jwt", new JWTStrategy({
+        jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: secretKey
+    }, async (jwt_payload, done) => {
+        try {
+            const user = await usersModel.findById(jwt_payload.user._id)
+            if (!user) {
+                return done(null, false)
+            }
+            return done(null,user);
+        } catch (error) {
+            return done(error)
+        }
+    }))
+
 
 }
 
 const cookieExtractor = (req) => {
-    const cookie = null
+    let token = null
     if (req && req.cookies) {
         token = req.cookies["cookieToken"]
     }
-    return cookie
+    return token
 }
 
 
