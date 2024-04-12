@@ -18,9 +18,9 @@ const cartsSchema= new mongoose.Schema({
     ]
 })
 
- cartsSchema.pre("find",function(next){
+ cartsSchema.pre("findOne",function(next){
 
-    this.populate("products.product")
+    this.populate("products.product","_id title price")
     next()
  })
 

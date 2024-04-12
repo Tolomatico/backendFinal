@@ -3,7 +3,8 @@ const response = require("../utils/reusables.js")
 const productsModel = require("../models/products.model.js")
 const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
-const cartManager=new CartManager()
+const cartManager = new CartManager()
+const totalCart=require("../utils/equations.js")
 
 class ViewController {
 
@@ -152,15 +153,30 @@ class ViewController {
 
         try {
             const cart = await cartManager.getCartById(id)
-            const cartMap = {
-                _id: cart._id,
-                products: cart.products.map(product => ({
-                    _id: product._id,
-                    quantity: product.quantity
-                }))
+
+            if (!cart) {
+                return response(res, 404, "No se a encontrado un carrito con ese id")
             }
+
+            let total = 0
+
+            const cartProducts = cart.products.map(item => {
+                const product = item.product.toObject()
+                const quantity = item.quantity
+                const totalPrice = product.price * quantity
+
+                total += totalPrice
+
+                return {
+                    product: { ...product, totalPrice },
+                    quantity,
+                    id
+                }
+            })
+
             res.render("carts", {
-                cart: cartMap
+                cart: cartProducts,
+                totalCart:totalCart(cartProducts)
             }
             )
 
