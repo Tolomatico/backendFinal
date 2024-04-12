@@ -70,7 +70,7 @@ app.use("/", viewsRouter)
 
 
 const httpServer = app.listen(PUERTO, () => {
-    console.log(`Escuchando en http://localhost:${PUERTO}/products`)
+    console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
 

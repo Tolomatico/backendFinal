@@ -1,6 +1,9 @@
 const UserDTO = require("../dto/user.dto.js")
 const response = require("../utils/reusables.js")
 const productsModel = require("../models/products.model.js")
+const transport = require("../config/transport.js")
+const CartManager = require("../dao/db/cart-manager-db.js")
+const cartManager=new CartManager()
 
 class ViewController {
 
@@ -12,7 +15,6 @@ class ViewController {
                 const userDto = new UserDTO(
                     req.user.first_name,
                     req.user.last_name,
-                    req.user.age,
                     req.user.email,
                     req.user.rol
                 )
@@ -37,6 +39,15 @@ class ViewController {
         res.render("register")
     }
 
+    async renderChat(req, res) {
+
+        try {
+            res.render("chat")
+        } catch (error) {
+            response(res, 500, `Error al ingresar al chat: ${error}`)
+        }
+    }
+
     async renderProducts(req, res) {
 
         const page = parseInt(req.query.page) || 1
@@ -56,7 +67,6 @@ class ViewController {
                 const userDto = new UserDTO(
                     req.user.first_name,
                     req.user.last_name,
-                    req.user.age,
                     req.user.email,
                     req.user.rol
                 )
@@ -100,7 +110,6 @@ class ViewController {
                 const userDto = new UserDTO(
                     req.user.first_name,
                     req.user.last_name,
-                    req.user.age,
                     req.user.email,
                     req.user.rol
                 )
@@ -112,12 +121,54 @@ class ViewController {
                     isAdmin: isAdmin
                 })
 
-            } 
-        }catch (error) {
+            }
+        } catch (error) {
             response(res, 500, `Error al obtener los productos: ${error}`)
         }
+    }
 
+    async renderMail(req, res) {
+        try {
+            await transport.sendMail({
+                from: "Tomás Ballesty <ballesty.t@gmail.com",
+                to: "tolomagnanimo@gmail.com",
+                subject: "Correo de prueba",
+                html: `<h1>Prueba de mail</h1>`,
+                attachments: [{
+                    filename: "coca.webp",
+                    path: "./src/public/img/coca.webp",
+                    cid: "coca"
+                }]
+            })
+            response(res, 200, "Correo enviado")
 
-}}
+        } catch (error) {
+            response(res, 500, `Error al enviar mail: ${error}`)
+        }
+    }
+
+    async renderCart(req, res) {
+        const id = req.params.id
+
+        try {
+            const cart = await cartManager.getCartById(id)
+            const cartMap = {
+                _id: cart._id,
+                products: cart.products.map(product => ({
+                    _id: product._id,
+                    quantity: product.quantity
+                }))
+            }
+            res.render("carts", {
+                cart: cartMap
+            }
+            )
+
+        } catch (error) {
+            response(res, 500, `Error al obtener el carrito: ${error}`)
+        }
+    }
+
+}
 
 module.exports = ViewController
