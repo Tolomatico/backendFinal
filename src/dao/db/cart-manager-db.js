@@ -33,11 +33,11 @@ class CartManager {
             const cart = await this.getCartById(cid)
 
             if (!cart) {
-                console.log("No esxiste un carrito con ese id")
+                console.log("No existe un carrito con ese id")
                 return null
             }
 
-            const cartProductExisting = cart.products.find(item => item.product == pid)
+            const cartProductExisting = cart.products.find(item => item.product._id.toString() === pid)
             if (cartProductExisting) {
                 cartProductExisting.quantity += quantity
             } else {

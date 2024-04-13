@@ -4,7 +4,7 @@ const productsModel = require("../models/products.model.js")
 const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
-const totalCart=require("../utils/equations.js")
+const totalCart = require("../utils/equations.js")
 
 class ViewController {
 
@@ -61,7 +61,7 @@ class ViewController {
 
             const arrayProducts = products.docs.map(product => {
                 const { _id, ...rest } = product.toObject()
-                return rest
+                return { id: _id, ...rest }
             })
 
             if (req.user) {
@@ -69,9 +69,13 @@ class ViewController {
                     req.user.first_name,
                     req.user.last_name,
                     req.user.email,
-                    req.user.rol
+                    req.user.rol,
+                    req.user.cart.toString()
                 )
 
+                const cartId = req.user.cart.toString()
+                
+                
                 const isAdmin = req.user.rol === 'admin';
                 res.render("products", {
                     products: arrayProducts,
@@ -83,7 +87,8 @@ class ViewController {
                     totalPages: products.totalPages,
                     title: "Productos",
                     user: userDto,
-                    isAdmin: isAdmin
+                    isAdmin: isAdmin,
+                    cart:cartId
                 })
 
             } else {
@@ -112,7 +117,8 @@ class ViewController {
                     req.user.first_name,
                     req.user.last_name,
                     req.user.email,
-                    req.user.rol
+                    req.user.rol,
+                    
                 )
 
                 const isAdmin = req.user.rol === 'admin'
@@ -152,6 +158,15 @@ class ViewController {
         const id = req.params.id
 
         try {
+
+            const userDto = new UserDTO(
+                req.user.first_name,
+                req.user.last_name,
+                req.user.email,
+                req.user.rol,
+                req.user.cart.toString()
+                
+            )
             const cart = await cartManager.getCartById(id)
 
             if (!cart) {
@@ -170,13 +185,16 @@ class ViewController {
                 return {
                     product: { ...product, totalPrice },
                     quantity,
-                    id
+                    id:id.toString()
                 }
             })
+           
 
             res.render("carts", {
                 cart: cartProducts,
-                totalCart:totalCart(cartProducts)
+                totalCart: totalCart(cartProducts),
+                id,
+                user:userDto
             }
             )
 

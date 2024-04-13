@@ -16,13 +16,18 @@ class userController {
             if (user) {
                 return res.status(400).send({ error: "Ya existe un usuario con ese email" })
             }
+
+            const newCart=new cartModel()
+            await newCart.save()
+
             const newUser = await userModel.create({
                 first_name,
                 last_name,
                 email,
                 age,
                 password: createHash(password.toString()),
-                rol: "user"
+                rol: "user",
+                cart:newCart
             })
 
             const token = generateToken({ user: newUser })
@@ -84,7 +89,8 @@ class userController {
                 req.user.first_name,
                 req.user.last_name,
                 req.user.email,
-                req.user.rol
+                req.user.rol,
+                req.user.cart
             )
     
             const isAdmin = req.user.rol === 'admin';

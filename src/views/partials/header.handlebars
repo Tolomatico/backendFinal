@@ -17,9 +17,11 @@
                         <li> <a class="text-3xl font-bold text-white" href="/api/users/profile">Hola
                                         {{user.first_name}}</a></li>
                         <li> <a class="text-3xl font-bold text-white" href="/api/users/logout">Cerrar sesión</a></li>
+                        <li><a class="text-4xl font-bold text-white" href="/carts/{{user.cart}}"> <ion-icon  name="cart-outline"></ion-icon></a></li>
                         {{else}}
                         <li><a class="text-3xl font-bold text-white" href="/login">Iniciar sesión</a></li>
                         <li> <a class="text-3xl font-bold text-white" href="/register">Ingresar</a></li>
+                        <li><a class="text-4xl font-bold text-white" href="/carts/{{user.cart}}"> <ion-icon  name="cart-outline"></ion-icon></a></li>
 
                         {{/if}}
                 </ul>
@@ -27,9 +29,8 @@
         </nav>
 
 
-
-
-
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 
 

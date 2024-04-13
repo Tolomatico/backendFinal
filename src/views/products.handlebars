@@ -12,8 +12,10 @@
     <p>{{this.title}}</p>
     <p>${{this.price}}</p>
     <p>stock:{{this.stock}}</p>
+
+   <form method="POST" action="api/carts/{{../cart}}/product/{{this.id}}" >
     <button>Agregar al carrito</button>
-    
+    </form>
 
 </div>
 {{/if}}

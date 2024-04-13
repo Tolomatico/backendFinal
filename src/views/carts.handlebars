@@ -10,10 +10,16 @@
         <p>Cantidad: {{this.quantity}}</p>
         <p>Total por cantidad: ${{product.totalPrice}}</p>
     </li>
+        
+           <button>Eliminar producto</button>
+        
     {{/each}}
 
     <h2>Total del carrito: {{totalCart}}</h2>
+     
+           <button>Vaciar el carrito</button>
+        
     {{else}}
     <p>No hay productos en el carrito</p>
     {{/if}}
-    </ul>
+</ul>
