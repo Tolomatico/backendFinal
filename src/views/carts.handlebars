@@ -5,21 +5,50 @@
 
     {{#each cart}}
     <li>
+
+       
         <p>{{product.title}}</p>
         <p>${{product.price}}</p>
         <p>Cantidad: {{this.quantity}}</p>
         <p>Total por cantidad: ${{product.totalPrice}}</p>
     </li>
-        
-           <button>Eliminar producto</button>
-        
+
+    <button onclick="deleteProduct(`{{id}}`,`{{product._id}}`)">Eliminar producto</button>
+
     {{/each}}
 
     <h2>Total del carrito: {{totalCart}}</h2>
-     
-           <button>Vaciar el carrito</button>
-        
+
+    <button onclick="emptyCart(`{{id}}`)">Vaciar el carrito</button>
+
     {{else}}
     <p>No hay productos en el carrito</p>
     {{/if}}
 </ul>
+
+<script>
+   async function deleteProduct(cartId, productId) {
+     
+        fetch(`/api/carts/${cartId}/product/${productId}`, { method: "DELETE" })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al eliminar el producto del carrito")
+                }
+                location.reload()
+            })
+            .catch(error => console.log(error));
+    }
+
+   async function emptyCart(cartId) {
+   
+        fetch(`/api/carts/${cartId}`, { method: "DELETE" })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al vaciar el carrito");
+                }
+                location.reload()
+            })
+            .catch(error => console.log(error))
+    }
+
+</script>

@@ -44,21 +44,21 @@ router.post("/:cid/product/:pid",async (req,res)=>{
 
     try {
         const cartUpdate= await manager.addProducts(cartId,productId,quantity)
-        res.send(cartUpdate)
+        res.json(cartUpdate)
     } catch (error) {
         console.log("Error al agregar al carrito",error)     
     }
 
 })
 
- router.delete("/:cid/products/:pid", async (req,res)=>{
+ router.delete("/:cid/product/:pid", async (req,res)=>{
          const cid = req.params.cid
          const pid= req.params.pid
 
-         
+        
          try {
-            const productTodelete= await manager.deleteProductFromCart(cid,pid)
-            res.send(productTodelete)
+            const productToDelete= await manager.deleteProductFromCart(cid,pid)
+            res.send(productToDelete)
          } catch (error) {
             console.log("Error al borrar el producto",error)
          }
@@ -68,10 +68,10 @@ router.delete("/:cid", async (req,res)=>{
     const cid =req.params.cid
     
     try {
-        const cartDeleted= await manager.deleteCart(cid)
-        res.send(cartDeleted)
+        const emptyCart= await manager.emptyCart(cid)
+        res.send(emptyCart)
     } catch (error) {
-        console.log("Error al intentar borrar el carrito")
+        console.log("Error al vaciar el carrito")
     }
 
 })

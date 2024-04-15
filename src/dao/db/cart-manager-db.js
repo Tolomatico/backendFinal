@@ -65,6 +65,25 @@ class CartManager {
         }
     }
 
+    async emptyCart(cid) {
+
+        try {
+            const cart = await cartsModel.findByIdAndUpdate(cid)
+            if (!cart) {
+                console.log("No se encontro el carrito")
+                return null
+            }
+            cart.products = []
+            await cart.save()
+
+
+            console.log("Carrito vaciado con éxito")
+
+        } catch (error) {
+            console.log("Error al evaciar el carrito", error)
+        }
+    }
+
 
     async deleteCart(cid) {
         try {
@@ -89,34 +108,30 @@ class CartManager {
                 console.log("No se encuentra el carrito buscado")
                 return null
             }
+            
+            cart.products = cart.products.filter(item => item.product._id.toString() !== pid)
+            
+            await cart.save()
+            return cart
 
-            const index = cart.products.findIndex(item => item.product == pid)
-            if (index !== -1) {
 
-                cart.products.splice(index, 1)
-
-                cart.markModified("products")
-                await cart.save()
-                console.log("Producto eliminado del carrito correctamente")
-            }
-            return null
 
         } catch (error) {
             console.log("Error al intentar borrar el producto", error)
         }
     }
 
-    async updateProductsFromCart(cid,products){
+    async updateProductsFromCart(cid, products) {
 
         try {
             const cart = await cartsModel.findByIdAndUpdate(
-                cid,{$push : { products : {$each: products}}}, { new: true })
-                
+                cid, { $push: { products: { $each: products } } }, { new: true })
+
             if (!cart) {
                 console.log("No se encuentra el carrito buscado")
                 return null
             }
-          
+
             return cart
 
         } catch (error) {
@@ -134,7 +149,7 @@ class CartManager {
                 console.log("No se encuentra el carrito buscado")
                 return null
             }
-            
+
             const index = cart.products.findIndex(item => item.product == pid)
 
             if (index !== -1) {

@@ -70,10 +70,10 @@ class ViewController {
                     req.user.last_name,
                     req.user.email,
                     req.user.rol,
-                    req.user.cart.toString()
+                    req.user.cart
                 )
 
-                const cartId = req.user.cart.toString()
+                const cartId = req.user.cart
                 
                 
                 const isAdmin = req.user.rol === 'admin';
@@ -164,11 +164,11 @@ class ViewController {
                 req.user.last_name,
                 req.user.email,
                 req.user.rol,
-                req.user.cart.toString()
+                req.user.cart
                 
             )
             const cart = await cartManager.getCartById(id)
-
+            
             if (!cart) {
                 return response(res, 404, "No se a encontrado un carrito con ese id")
             }
@@ -189,7 +189,7 @@ class ViewController {
                 }
             })
            
-
+            
             res.render("carts", {
                 cart: cartProducts,
                 totalCart: totalCart(cartProducts),
