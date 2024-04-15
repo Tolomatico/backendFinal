@@ -3,6 +3,10 @@ const router = express.Router()
 
 const CartManager = require("../dao/db/cart-manager-db.js")
 const manager = new CartManager()
+const CartController=require("../controllers/cart.controller.js")
+const cartController=new CartController()
+
+router.post("/:cid/purchase",cartController.finishPurchase)
 
 router.get("/",async (req,res)=>{
     try{
