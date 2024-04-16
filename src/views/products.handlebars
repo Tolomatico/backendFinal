@@ -3,29 +3,31 @@
 {{#if products.length }}
 
 <section class="container">
-{{#each products}}
-{{#if this.status}}
-<div class="card">
+    {{#each products}}
+    {{#if this.stock }}
+   
+    <div class="card">
 
-    
-    <img class="img" src={{this.thumbnail}} />
-    <p>{{this.title}}</p>
-    <p>${{this.price}}</p>
-    <p>stock:{{this.stock}}</p>
 
-   <form method="POST" action="api/carts/{{../cart}}/product/{{this.id}}" >
-    <button>Agregar al carrito</button>
-    </form>
+        <img class="img" src={{this.thumbnail}} />
+        <p>{{this.title}}</p>
+        <p>${{this.price}}</p>
+        <p>stock:{{this.stock}}</p>
 
-</div>
-{{/if}}
-{{/each}}
+        <form method="POST" action="api/carts/{{../cart}}/product/{{this.id}}">
+            <button>Agregar al carrito</button>
+        </form>
+
+    </div>
+
+    {{/if}}
+    {{/each}}
 </section>
 {{#if hasPrevPage}}
-    <a href="/products?page={{prevPage}}"> Anterior</a>
+<a href="/products?page={{prevPage}}"> Anterior</a>
 {{/if}}
 {{#if hasNextPage}}
-    <a href="/products?page={{nextPage}}"> Siguiente</a>
+<a href="/products?page={{nextPage}}"> Siguiente</a>
 {{/if}}
 
 <p>Pagina {{currentPage}} de {{totalPages}}</p>
@@ -34,7 +36,3 @@
 <p>No hay productos disponibles.</p>
 
 {{/if}}
-
-
-
-

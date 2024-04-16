@@ -19,6 +19,7 @@ class CartController {
 
             const noStockProducts = []
 
+
             for (const item of products) {
                 const id = item.product
                 const product = await productManager.getProductById(id)
@@ -26,26 +27,40 @@ class CartController {
                     noStockProducts.push(item)
 
                 } else {
+
                     product.stock = product.stock - item.quantity
                     product.save()
                 }
             }
+          
+            cart.products=cart.products.filter(item=>noStockProducts.some(item2=>item2.product._id !== item.product._id))
 
+            await cart.save()
 
-            const amount = products.reduce((acc, item) => {
+            const amount = cart.products.reduce((acc, item) => {
                 return acc + (item.product.price * item.quantity)
             }, 0)
 
 
-            const ticket = new ticketModel({
-                code: generateCode(),
-                purchase_datetime: Date.now(),
-                amount: amount,
-                purchaser: user._id
-            })
+            if (cart) {
+                const ticket = new ticketModel({
+                    code: generateCode(),
+                    purchase_datetime: Date.now(),
+                    amount: amount,
+                    purchaser: user._id
+                })
+                
 
-            await ticket.save()
-            response(res, 201, `Se ah generado el ticket correctamente: ${ticket}`)
+                await ticket.save()
+                response(res, 201, `Se ah generado el ticket correctamente: ${ticket}`)
+
+            } else {
+
+
+                response(res, 404, `No se ah podido generar el ticket`)
+            }
+
+
 
         } catch (error) {
             response(res, 404, `Error al generar el ticket: ${error}`)
@@ -134,17 +149,17 @@ class CartController {
         }
     }
 
-    async updateProduct(req,res){
-        const cid=req.params.cid
-        const pid=req.params.pid
-        const quantity=req.body.quantity 
-        
+    async updateProduct(req, res) {
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const quantity = req.body.quantity
+
         try {
-             const productQuantityModified= await cartManager.updateCartProduct(cid,pid,quantity)
-             res.send(productQuantityModified)
-            
+            const productQuantityModified = await cartManager.updateCartProduct(cid, pid, quantity)
+            res.send(productQuantityModified)
+
         } catch (error) {
-            console.log("Error al querer modificar la cantidad del producto",error)
+            console.log("Error al querer modificar la cantidad del producto", error)
         }
     }
 
