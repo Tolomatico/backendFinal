@@ -7,12 +7,8 @@ const exphbs = require("express-handlebars")
 const multer = require("multer")
 const socket = require("socket.io")
 const cookieParser = require("cookie-parser")
-const session = require("express-session")
-const MongoStore = require("connect-mongo")
 const passport = require("passport")
 const initilizePassport = require("./config/passport.config.js")
-const configObject = require("./config/config.js")
-const { mongo_url, secretKey } = configObject
 const cors = require("cors")
 const authMiddleware = require("./middleware/authmiddleware.js")
 
@@ -50,12 +46,12 @@ app.post("/upload", upload.single("img"), (req, res) => {
 })
 
 
+
+///  AuthMiddleware  ///
+
 app.use(cookieParser())
 initilizePassport()
 app.use(passport.initialize())
-
-       ///  AuthMiddleware  ///
-
 app.use(authMiddleware)
 app.use(cors())
 app.use(express.json())
@@ -105,7 +101,7 @@ io.on("connection", async (socket) => {
 
 })
 
-// Mailing ///
+
 
 
 

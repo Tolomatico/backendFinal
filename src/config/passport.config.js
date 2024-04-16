@@ -10,6 +10,8 @@ const ExtractJwt = jwt.ExtractJwt
 const LocalStrategy = local.Strategy
 const configObject = require("./config.js")
 const { secretKey } = configObject
+const cartModel=require("../models/carts.model.js")
+const generateToken = require("../utils/jsonwebtoken.js")
 
 const initilizePassport = () => {
 
@@ -33,8 +35,10 @@ const initilizePassport = () => {
                     age,
                     rol: rol ? rol : "user"
                 }
-
+               
                 let result = await usersModel.create(newUser)
+
+                
                 return done(null, result)
             }
         } catch (error) {
@@ -74,7 +78,8 @@ const initilizePassport = () => {
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.d7375a3dc3ccf079",
         clientSecret: "20a0af96db7c68f0449c9ee7c04922ff0befe5a2",
-        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+        callbackURL: "http://localhost:8080/api/users/githubcallback",
+        session: false
 
     }, async (accessToken, refreshToken, profile, done) => {
 
@@ -85,16 +90,21 @@ const initilizePassport = () => {
             let user = await usersModel.findOne({ email: profile._json.email })
             if (!user) {
 
+                const newCart = new cartModel()
+                await newCart.save()
+
                 let newUser = {
                     first_name: name[0],
                     last_name: name[1],
                     email: profile._json.email,
                     password: createHash(profile._json.id.toString()),
                     age: 18,
-                    rol: "user"
+                    rol: "user",
+                    cart:newCart
                 }
                 let result = await usersModel.create(newUser)
-                done(null, result)
+                const token=generateToken(newUser)
+                done(null, {result,token})
             } else {
                 done(null, user)
             }
@@ -123,6 +133,9 @@ const initilizePassport = () => {
             })
             if (!user) {
 
+                const newCart = new cartModel()
+                await newCart.save()
+
                 let newUser = {
                     first_name: name[0],
                     last_name: name[1],
@@ -131,11 +144,13 @@ const initilizePassport = () => {
                     age: 18,
                     rol: "user",
                     accountId: profile.id,
-                    provider: "facebook"
+                    provider: "facebook",
+                    cart:newCart
                 }
 
                 let result = await usersModel.create(newUser)
-                done(null, result)
+                const token=generateToken(newUser)
+                done(null, {result,token})
             } else {
                 done(null, user)
             }
@@ -168,7 +183,7 @@ const initilizePassport = () => {
             if (!user) {
                 return done(null, false)
             }
-            return done(null,user);
+            return done(null, user);
         } catch (error) {
             return done(error)
         }

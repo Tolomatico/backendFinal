@@ -62,7 +62,7 @@ class userController {
 
             }
 
-
+            
             const token = generateToken({ user: user })
 
             res.cookie("cookieToken",
