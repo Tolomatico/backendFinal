@@ -3,4 +3,12 @@ const totalCart=(array)=> array.reduce((acc,item)=>{
 
 },0)
 
-module.exports=totalCart
+const generateCode = ()=>{
+
+    const random=Math.random()
+    const date=Date.now()
+    return parseInt(random + date)
+
+}
+
+module.exports={totalCart,generateCode}

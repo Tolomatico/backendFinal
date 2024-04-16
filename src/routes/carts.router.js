@@ -6,7 +6,7 @@ const manager = new CartManager()
 const CartController=require("../controllers/cart.controller.js")
 const cartController=new CartController()
 
-router.post("/:cid/purchase",cartController.finishPurchase)
+router.get("/:cid/purchase",cartController.finishPurchase)
 
 router.get("/",async (req,res)=>{
     try{

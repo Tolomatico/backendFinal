@@ -4,7 +4,7 @@ const productsModel = require("../models/products.model.js")
 const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
-const totalCart = require("../utils/equations.js")
+const {totalCart} = require("../utils/equations.js")
 
 class ViewController {
 
