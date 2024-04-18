@@ -14,47 +14,48 @@ class CartController {
         try {
 
             const cart = await cartManager.getCartById(cartId)
-            const products = cart.products
+            let products = cart.products
             const user = await usersModel.findOne({ cart: cartId })
 
             const noStockProducts = []
-
+            const stockProducts = []
 
             for (const item of products) {
                 const id = item.product
                 const product = await productManager.getProductById(id)
                 if (product.stock >= item.quantity) {
-                   
+
                     product.stock = product.stock - item.quantity
                     product.save()
+                    stockProducts.push(item)
 
                 } else {
                     noStockProducts.push(item)
-                    
+
                 }
+
+
             }
 
-            
-        cart.products = cart.products.filter(item => noStockProducts.some(productId => productId.equals(item.product)))
-
+            cart.products = []
             await cart.save()
-           
-            const amount = cart.products.reduce((acc, item) => {
+
+            const amount = stockProducts.reduce((acc, item) => {
                 return acc + (item.product.price * item.quantity)
             }, 0)
 
             
-                const ticket = new ticketModel({
-                    code: generateCode(),
-                    purchase_datetime: Date.now(),
-                    amount: amount,
-                    purchaser: user._id
-                })
+            const ticket = new ticketModel({
+                code: generateCode(),
+                purchase_datetime: Date.now(),
+                amount: amount,
+                purchaser: user._id
+            })
 
-                await ticket.save()
+            await ticket.save()
 
-                
-                response(res, 201, `Se ah generado el ticket correctamente: ${ticket}`)
+
+            res.status(201).json(ticket)
 
 
         } catch (error) {
