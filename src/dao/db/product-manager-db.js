@@ -9,31 +9,37 @@ class ProductManager {
         
         let { title, description, price, thumbnail, code, stock,status,category,img } = product
 
-
-        if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img) {
-            console.log("Existen campos vacios,por favor, completarlos")
-            return
+        try {
+            if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img) {
+                console.log("Existen campos vacios,por favor, completarlos")
+                return
+            }
+    
+            const productoExistente= await productsModel.findOne({code:code})
+            if(productoExistente){
+                console.log("El codigo debe ser único")
+                return
+            }
+    
+    
+            const newProduct =new productsModel ({
+                title,
+                description,
+                img,
+                price,
+                thumbnail:thumbnail || [],
+                status,
+                code,
+                stock,
+                category
+            })
+            await newProduct.save()
+        } catch (error) {
+            console.log(error)
         }
 
-        const productoExistente= await productsModel.findOne({code:code})
-        if(productoExistente){
-            console.log("El codigo debe ser único")
-            return
-        }
 
-
-        const newProduct =new productsModel ({
-            title,
-            description,
-            img,
-            price,
-            thumbnail:thumbnail || [],
-            status,
-            code,
-            stock,
-            category
-        })
-        await newProduct.save()
+      
 
     }
 

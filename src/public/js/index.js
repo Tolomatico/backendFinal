@@ -19,7 +19,7 @@ const renderProducts =  (productos) => {
             <p>Id :${element._id}</p>
             <p>${element.title}</p>
             <p>Precio:$${element.price}</p>
-            <button class="eliminarProducto">Eliminar producto</button>
+            <button class="eliminarProducto border-2 rounded-xl border-red-700 bg-red-700 text-white p-1 mt-5">Eliminar producto</button>
             `
             div.appendChild(productCard)
     
