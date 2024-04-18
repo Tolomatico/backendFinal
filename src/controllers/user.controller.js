@@ -4,6 +4,9 @@ const { isValidPassword, createHash } = require("../utils/hashBcrypt.js")
 const response = require("../utils/reusables.js")
 const generateToken = require("../utils/jsonwebtoken.js")
 const UserDTO = require("../dto/user.dto.js")
+const UserManager = require("../dao/db/user-manager-db.js")
+const userManager=new UserManager()
+
 
 
 class userController {
@@ -12,7 +15,7 @@ class userController {
 
         const { first_name, last_name, age, password, email } = req.body
         try {
-            const user = await userModel.findOne({ email: email })
+            const user = await userManager.getUser( email )
             if (user) {
                 return res.status(400).send({ error: "Ya existe un usuario con ese email" })
             }
@@ -52,7 +55,7 @@ class userController {
         const { email, password } = req.body
 
         try {
-            const user = await userModel.findOne({ email })
+            const user = await userManager.getUser( email )
             if (!user) {
                 res.status(500).send("Error interno del servidor");
 

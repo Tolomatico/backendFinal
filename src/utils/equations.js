@@ -10,5 +10,8 @@ const generateCode = ()=>{
     return parseInt(random + date)
 
 }
+const totalAmount=(array)=>array.reduce((acc, item) => {
+    return acc + (item.product.price * item.quantity)
+}, 0)
 
-module.exports={totalCart,generateCode}
+module.exports={totalCart,generateCode,totalAmount}

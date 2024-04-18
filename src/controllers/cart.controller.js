@@ -1,6 +1,6 @@
 const response = require("../utils/reusables.js")
 const ticketModel = require("../models/ticket.model")
-const { generateCode } = require("../utils/equations")
+const { generateCode, totalAmount } = require("../utils/equations")
 const usersModel = require("../models/users.model.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
@@ -36,19 +36,13 @@ class CartController {
 
 
             }
-
             cart.products = []
             await cart.save()
 
-            const amount = stockProducts.reduce((acc, item) => {
-                return acc + (item.product.price * item.quantity)
-            }, 0)
-
-            
             const ticket = new ticketModel({
                 code: generateCode(),
                 purchase_datetime: Date.now(),
-                amount: amount,
+                amount: totalAmount(stockProducts),
                 purchaser: user._id
             })
 
