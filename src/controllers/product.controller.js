@@ -36,7 +36,7 @@ class ProductController{
     }
     async updateProduct(req,res){
         const  {id} = req.params;
-        const { title, description, price, thumbnail, status, code, stock } = req.body;
+        const { title, description, price,thumbnail, status, code, stock } = req.body;
         const updatedProduct = { title, description, price, thumbnail, status, code, stock };
         
         try {
