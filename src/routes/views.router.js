@@ -13,6 +13,7 @@ router.get("/realtimeproducts", checkrole(["admin"]), viewController.renderRealT
 router.get("/chat", checkrole(["user"]), viewController.renderChat)
 router.get("/mailing", viewController.renderMail)
 router.get("/carts/:id", viewController.renderCart)
+router.get("/mockingproducts",viewController.mockingProducts)
 
 
 

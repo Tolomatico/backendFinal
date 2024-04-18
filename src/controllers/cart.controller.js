@@ -23,43 +23,38 @@ class CartController {
             for (const item of products) {
                 const id = item.product
                 const product = await productManager.getProductById(id)
-                if (product.stock < item.quantity) {
-                    noStockProducts.push(item)
-
-                } else {
-
+                if (product.stock >= item.quantity) {
+                   
                     product.stock = product.stock - item.quantity
                     product.save()
+
+                } else {
+                    noStockProducts.push(item)
+                    
                 }
             }
-          
-            cart.products=cart.products.filter(item=>noStockProducts.some(item2=>item2.product._id !== item.product._id))
+
+            
+        cart.products = cart.products.filter(item => noStockProducts.some(productId => productId.equals(item.product)))
 
             await cart.save()
-
+           
             const amount = cart.products.reduce((acc, item) => {
                 return acc + (item.product.price * item.quantity)
             }, 0)
 
-
-            if (cart) {
+            
                 const ticket = new ticketModel({
                     code: generateCode(),
                     purchase_datetime: Date.now(),
                     amount: amount,
                     purchaser: user._id
                 })
-                
 
                 await ticket.save()
+
+                
                 response(res, 201, `Se ah generado el ticket correctamente: ${ticket}`)
-
-            } else {
-
-
-                response(res, 404, `No se ah podido generar el ticket`)
-            }
-
 
 
         } catch (error) {

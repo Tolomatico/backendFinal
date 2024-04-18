@@ -4,7 +4,8 @@ const productsModel = require("../models/products.model.js")
 const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
-const {totalCart} = require("../utils/equations.js")
+const { totalCart } = require("../utils/equations.js")
+const generateProducts=require("../utils/generateProducts.js")
 
 class ViewController {
 
@@ -74,8 +75,8 @@ class ViewController {
                 )
 
                 const cartId = req.user.cart
-                
-                
+
+
                 const isAdmin = req.user.rol === 'admin';
                 res.render("products", {
                     products: arrayProducts,
@@ -88,7 +89,7 @@ class ViewController {
                     title: "Productos",
                     user: userDto,
                     isAdmin: isAdmin,
-                    cart:cartId
+                    cart: cartId
                 })
 
             } else {
@@ -118,7 +119,7 @@ class ViewController {
                     req.user.last_name,
                     req.user.email,
                     req.user.rol,
-                    
+
                 )
 
                 const isAdmin = req.user.rol === 'admin'
@@ -165,10 +166,10 @@ class ViewController {
                 req.user.email,
                 req.user.rol,
                 req.user.cart
-                
+
             )
             const cart = await cartManager.getCartById(id)
-            
+
             if (!cart) {
                 return response(res, 404, "No se a encontrado un carrito con ese id")
             }
@@ -185,21 +186,36 @@ class ViewController {
                 return {
                     product: { ...product, totalPrice },
                     quantity,
-                    id:id.toString()
+                    id: id.toString()
                 }
             })
-           
-            
+
+
             res.render("carts", {
                 cart: cartProducts,
                 totalCart: totalCart(cartProducts),
                 id,
-                user:userDto
+                user: userDto
             }
             )
 
         } catch (error) {
             response(res, 500, `Error al obtener el carrito: ${error}`)
+        }
+    }
+
+    async mockingProducts(req, res) {
+        try {
+
+            const products = []
+            for (let i = 0; i < 100; i++) {
+                products.push(generateProducts())
+            }
+
+            response(res, 200, products)
+
+        } catch (error) {
+            response(res, 404, "Error al cargar productos del mock")
         }
     }
 
