@@ -96,10 +96,11 @@ class CartController {
 
         try {
             const product = await cartManager.addProducts(cartId, productId, quantity)
-            response(res, 201, "Se agrego el producto al carrito")
-
+            
+            req.logger.info(`Se agrego el producto al carrito: ${product}`)
+           response(res,201,`Se agregado el producto al carrito correctamente`)
         } catch (error) {
-            console.log("Error al agregar al carrito", error)
+            req.logger.error(`Error al agregar el producto:${error}`)
         }
     }
 

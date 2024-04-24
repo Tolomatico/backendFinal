@@ -5,7 +5,7 @@ const response = require("../utils/reusables.js")
 const generateToken = require("../utils/jsonwebtoken.js")
 const UserDTO = require("../dto/user.dto.js")
 const UserManager = require("../dao/db/user-manager-db.js")
-const userManager=new UserManager()
+const userManager = new UserManager()
 
 
 
@@ -15,12 +15,12 @@ class userController {
 
         const { first_name, last_name, age, password, email } = req.body
         try {
-            const user = await userManager.getUser( email )
+            const user = await userManager.getUser(email)
             if (user) {
                 return res.status(400).send({ error: "Ya existe un usuario con ese email" })
             }
 
-            const newCart=new cartModel()
+            const newCart = new cartModel()
             await newCart.save()
 
             const newUser = await userModel.create({
@@ -30,7 +30,7 @@ class userController {
                 age,
                 password: createHash(password.toString()),
                 rol: "user",
-                cart:newCart
+                cart: newCart
             })
 
             const token = generateToken({ user: newUser })
@@ -55,17 +55,17 @@ class userController {
         const { email, password } = req.body
 
         try {
-            const user = await userManager.getUser( email )
+            const user = await userManager.getUser(email)
             if (!user) {
-                res.status(500).send("Error interno del servidor");
-
+                req.logger.warn("No existe un usuario con ese email.")
+                location.reload()
             }
             if (!isValidPassword(password, user)) {
-                res.status(500).send("Error interno del servidor");
-
+                req.logger.warn("La contraseña no es válida.")
+                location.reload()
             }
 
-            
+
             const token = generateToken({ user: user })
 
             res.cookie("cookieToken",
@@ -78,9 +78,9 @@ class userController {
 
 
         } catch (error) {
-            console.log("Error al autenticarse", error)
-            res.status(500).send("Error interno del servidor");
 
+            req.logger.warn("Error interno del servidor.")
+            res.redirect("/login")
         }
 
     }
@@ -95,13 +95,13 @@ class userController {
                 req.user.rol,
                 req.user.cart
             )
-    
+
             const isAdmin = req.user.rol === 'admin';
             res.render("profile", { user: userDto, isAdmin: isAdmin })
         } catch (error) {
-            res.status(500).json({message:"Error al cargar la página:",error})
+            res.status(500).json({ message: "Error al cargar la página:", error })
         }
-       
+
     }
 
     async logout(req, res) {

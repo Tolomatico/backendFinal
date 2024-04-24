@@ -5,7 +5,7 @@ const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
 const { totalCart } = require("../utils/equations.js")
-const generateProducts=require("../utils/generateProducts.js")
+const generateProducts = require("../utils/generateProducts.js")
 
 class ViewController {
 
@@ -217,6 +217,16 @@ class ViewController {
         } catch (error) {
             response(res, 404, "Error al cargar productos del mock")
         }
+    }
+
+    async renderLogger(req, res) {
+
+            res.send("Test")
+            req.logger.error("Error logger")
+            req.logger.info("Info logger")
+            req.logger.debug("Debug logger")
+            req.logger.warn("Warning logger")
+     
     }
 
 }

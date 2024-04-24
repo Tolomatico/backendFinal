@@ -12,6 +12,7 @@ const initilizePassport = require("./config/passport.config.js")
 const cors = require("cors")
 const authMiddleware = require("./middleware/authmiddleware.js")
 const compression=require("express-compression")
+const addLogger=require("./utils/logger.js")
 
 ///  Conexion a MONGO DB ///
 
@@ -50,6 +51,7 @@ app.post("/upload", upload.single("img"), (req, res) => {
 
 ///  AuthMiddleware  ///
 
+app.use(addLogger)
 app.use(cookieParser())
 initilizePassport()
 app.use(passport.initialize())

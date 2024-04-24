@@ -14,6 +14,7 @@ router.get("/chat", checkrole(["user"]), viewController.renderChat)
 router.get("/mailing", viewController.renderMail)
 router.get("/carts/:id", viewController.renderCart)
 router.get("/mockingproducts",viewController.mockingProducts)
+router.get("/loggertest",viewController.renderLogger)
 
 
 
