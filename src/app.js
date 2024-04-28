@@ -13,6 +13,9 @@ const cors = require("cors")
 const authMiddleware = require("./middleware/authmiddleware.js")
 const compression=require("express-compression")
 const addLogger=require("./utils/logger.js")
+const {cpus}=require("os")
+const cpu=cpus().length
+
 
 ///  Conexion a MONGO DB ///
 
