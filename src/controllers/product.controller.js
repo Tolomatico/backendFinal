@@ -1,3 +1,7 @@
+const ProductManager=require("../dao/db/product-manager-db.js")
+const manager=new ProductManager()
+
+
 class ProductController{
 
     async getProductById(req,res){
@@ -26,7 +30,7 @@ class ProductController{
     }
     async newProduct(req,res){
         const newProduct = req.body
-
+        
     try {
         await manager.addProduct(newProduct);
         res.send({ status: "success", message: "Producto creado correctamente" });
@@ -48,8 +52,9 @@ class ProductController{
     }
     async deleteProduct(req,res){
         const {id} = req.params
-    
+        
         try {
+
             await manager.deleteProduct(id)
             res.send({ status: "success", message: "Producto eliminado correctamente" })
         } catch (error) {

@@ -1,15 +1,15 @@
-<h3>Perfil</h3>
+<div class="mt-8 mx-8 max-w-md">
+<div class="shadow border-grey p-5 ">
+<h3 class="font-extrabold text-4xl">Perfil</h3>
 
 
-<p><b>Nombre:</b> {{user.first_name}}</p>
-<p><b>Apellido:</b> {{user.last_name}}</p>
-<p><b>Email:</b> {{user.email}}</p>
+<p class="font-bold text-xl my-2">Nombre:  <span class="font-normal">{{user.first_name}}</span></p>
+<p class="font-bold text-xl my-2">Apellido:  <span class="font-normal">{{user.last_name}}</span></p>
+<p class="font-bold text-xl my-2">mail: <span class="font-normal">{{user.email}}</span></p>
 {{#if isAdmin}}
-    <p><b>Rol:</b> Admin</p>
+    <p class="font-bold text-xl my-2">Rol: <span class="font-normal">{{user.rol}}</span></p>
 {{/if}}
 
-<a class="border-2 rounded-xl border-red-700 bg-red-700 text-white p-1 mt-5 " href="/api/users/logout">Cerrar Sesión</a>
-
-
-
-
+<a class="block text-center  rounded-xl border bg-red-700 text-white p-1 mt-10 hover:bg-red-600"  href="/api/users/logout">Cerrar Sesión</a>
+</div>
+</div>

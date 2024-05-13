@@ -3,8 +3,7 @@ const usersCollection="users"
 
 const usersSchema= new mongoose.Schema({
     first_name:{
-        type:String,
-        required:true
+        type:String
     },
     last_name:{
         type:String,
@@ -17,15 +16,15 @@ const usersSchema= new mongoose.Schema({
     },
     password:{
         type:String,
-        //required:true,
+       
     },
     age:{
-        type:Number,
-        required:true
+        type:Number
+        
     },
     rol:{
         type:String,
-        enum:['admin', 'user'],
+        enum:['admin', 'user','premium'],
         default:"user"
 
     },
@@ -38,6 +37,9 @@ const usersSchema= new mongoose.Schema({
         type:String,
     },
     provider:{
+        type:String
+    },
+    token:{
         type:String
     }
 

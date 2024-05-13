@@ -1,5 +1,5 @@
 const UserDTO = require("../dto/user.dto.js")
-const response = require("../utils/reusables.js")
+const{ response} = require("../utils/reusables.js")
 const productsModel = require("../models/products.model.js")
 const transport = require("../config/transport.js")
 const CartManager = require("../dao/db/cart-manager-db.js")
@@ -8,6 +8,15 @@ const { totalCart } = require("../utils/equations.js")
 const generateProducts = require("../utils/generateProducts.js")
 
 class ViewController {
+
+    async renderPassrecover(req,res){
+
+        try {
+            res.render("passrecover")
+        } catch (error) {
+            response(res,404,"No se pudo redirigir a restablecer contraseña.")
+        }
+    }
 
     async renderHome(req, res) {
 
@@ -21,9 +30,11 @@ class ViewController {
                     req.user.rol
                 )
 
-                const isAdmin = req.user.rol === 'admin';
+                const isAdmin = req.user.rol === 'admin'
+                const isUser=req.user.rol ==="user"
+                const isPremium=req.user.rol ==="premium"
 
-                res.render("index", { user: userDto, isAdmin: isAdmin })
+                res.render("index", { user: userDto, isAdmin: isAdmin,isPremium:isPremium,isUser:isUser })
             } else {
                 res.render("index")
             }
@@ -77,7 +88,9 @@ class ViewController {
                 const cartId = req.user.cart
 
 
-                const isAdmin = req.user.rol === 'admin';
+                const isAdmin = req.user.rol === 'admin'
+            const isUser=req.user.rol ==="user"
+            const isPremium=req.user.rol ==="premium"
                 res.render("products", {
                     products: arrayProducts,
                     hasPrevPage: products.hasPrevPage,
@@ -88,7 +101,7 @@ class ViewController {
                     totalPages: products.totalPages,
                     title: "Productos",
                     user: userDto,
-                    isAdmin: isAdmin,
+                    isAdmin: isAdmin,isPremium:isPremium,isUser:isUser,
                     cart: cartId
                 })
 
@@ -101,7 +114,8 @@ class ViewController {
                     nextPage: products.nextPage,
                     currentPage: products.page,
                     totalPages: products.totalPages,
-                    title: "Productos"
+                    title: "Productos",
+                    
 
                 })
             }
@@ -123,10 +137,12 @@ class ViewController {
                 )
 
                 const isAdmin = req.user.rol === 'admin'
+            const isUser=req.user.rol ==="user"
+            const isPremium=req.user.rol ==="premium"
                 res.render("realTimeProducts", {
                     title: "Productos actualizados en tiempo real",
                     user: userDto,
-                    isAdmin: isAdmin
+                    isAdmin: isAdmin,isPremium:isPremium,isUser:isUser
                 })
 
             }
@@ -168,6 +184,9 @@ class ViewController {
                 req.user.cart
 
             )
+            const isAdmin = req.user.rol === 'admin'
+            const isUser=req.user.rol ==="user"
+            const isPremium=req.user.rol ==="premium"
             const cart = await cartManager.getCartById(id)
 
             if (!cart) {
@@ -195,7 +214,8 @@ class ViewController {
                 cart: cartProducts,
                 totalCart: totalCart(cartProducts),
                 id,
-                user: userDto
+                user: userDto,
+                isAdmin: isAdmin,isPremium:isPremium,isUser:isUser
             }
             )
 
@@ -227,6 +247,9 @@ class ViewController {
             req.logger.debug("Debug logger")
             req.logger.warn("Warning logger")
      
+    }
+    async renderMessage(req,res){
+        res.render("message")
     }
 
 }

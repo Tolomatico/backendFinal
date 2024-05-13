@@ -7,6 +7,7 @@ const exphbs = require("express-handlebars")
 const multer = require("multer")
 const socket = require("socket.io")
 const cookieParser = require("cookie-parser")
+const session = require('express-session')
 const passport = require("passport")
 const initilizePassport = require("./config/passport.config.js")
 const cors = require("cors")
@@ -53,11 +54,17 @@ app.post("/upload", upload.single("img"), (req, res) => {
 
 
 ///  AuthMiddleware  ///
-
+initilizePassport()
+app.use(session({
+    secret: 'tu_clave_secreta',
+    resave: false,
+    saveUninitialized: false
+  }))
 app.use(addLogger)
 app.use(cookieParser())
-initilizePassport()
+
 app.use(passport.initialize())
+app.use(passport.session())
 app.use(authMiddleware)
 app.use(cors())
 app.use(express.json())

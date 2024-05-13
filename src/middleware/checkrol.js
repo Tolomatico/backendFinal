@@ -1,6 +1,6 @@
 const jwt=require("jsonwebtoken")
 const configObject=require("../config/config.js")
-const response = require("../utils/reusables")
+const {response} = require("../utils/reusables")
 const {secretKey}=configObject
 
 

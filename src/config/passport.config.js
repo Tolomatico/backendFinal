@@ -15,61 +15,61 @@ const generateToken = require("../utils/jsonwebtoken.js")
 
 const initilizePassport = () => {
 
-    /// Register Strategy ///
+    // /// Register Strategy ///
 
-    passport.use("register", new LocalStrategy({
-        passReqToCallback: true,
-        usernameField: "email"
-    }, async (req, username, password, done) => {
-        const { first_name, last_name, email, age, rol } = req.body
-        try {
-            let user = await usersModel.findOne({ email })
-            if (user) {
-                return done(null, false)
-            } else {
-                let newUser = {
-                    first_name,
-                    last_name,
-                    email,
-                    password: createHash(password.toString()),
-                    age,
-                    rol: rol ? rol : "user"
-                }
+    // passport.use("register", new LocalStrategy({
+    //     passReqToCallback: true,
+    //     usernameField: "email"
+    // }, async (req, username, password, done) => {
+    //     const { first_name, last_name, email, age, rol } = req.body
+    //     try {
+    //         let user = await usersModel.findOne({ email })
+    //         if (user) {
+    //             return done(null, false)
+    //         } else {
+    //             let newUser = {
+    //                 first_name,
+    //                 last_name,
+    //                 email,
+    //                 password: createHash(password.toString()),
+    //                 age,
+    //                 rol: rol ? rol : "user"
+    //             }
                
-                let result = await usersModel.create(newUser)
+    //             let result = await usersModel.create(newUser)
 
                 
-                return done(null, result)
-            }
-        } catch (error) {
-            return done(error)
-        }
+    //             return done(null, result)
+    //         }
+    //     } catch (error) {
+    //         return done(error)
+    //     }
 
-    }))
+    // }))
 
-    /// Login Strategy ///
+    // /// Login Strategy ///
 
-    passport.use("login", new LocalStrategy({
-        usernameField: "email"
-    }, async (email, password, done) => {
-        try {
-            const user = await usersModel.findOne({ email })
-            if (!user) {
-                console.log("No existe un usuario con ese email.")
-                return done(null, false)
-            } else {
-                if (!isValidPassword(password.toString(), user)) {
-                    return done(null, false)
-                } else {
-                    return done(null, user)
-                }
-            }
+    // passport.use("login", new LocalStrategy({
+    //     usernameField: "email"
+    // }, async (email, password, done) => {
+    //     try {
+    //         const user = await usersModel.findOne({ email })
+    //         if (!user) {
+    //             console.log("No existe un usuario con ese email.")
+    //             return done(null, false)
+    //         } else {
+    //             if (!isValidPassword(password.toString(), user)) {
+    //                 return done(null, false)
+    //             } else {
+    //                 return done(null, user)
+    //             }
+    //         }
 
-        } catch (error) {
-            return done(error)
-        }
-    }
-    ))
+    //     } catch (error) {
+    //         return done(error)
+    //     }
+    // }
+    // ))
 
 
 
@@ -78,8 +78,7 @@ const initilizePassport = () => {
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.d7375a3dc3ccf079",
         clientSecret: "20a0af96db7c68f0449c9ee7c04922ff0befe5a2",
-        callbackURL: "http://localhost:8080/api/users/githubcallback",
-        session: false
+        callbackURL: "http://localhost:8080/api/sessions/githubcallback"
 
     }, async (accessToken, refreshToken, profile, done) => {
 
@@ -88,23 +87,17 @@ const initilizePassport = () => {
         try {
 
             let user = await usersModel.findOne({ email: profile._json.email })
+
             if (!user) {
-
-                const newCart = new cartModel()
-                await newCart.save()
-
                 let newUser = {
-                    first_name: name[0],
-                    last_name: name[1],
-                    email: profile._json.email,
-                    password: createHash(profile._json.id.toString()),
+                    first_name: profile._json.name,
+                    last_name: "",
                     age: 18,
-                    rol: "user",
-                    cart:newCart
+                    email: profile._json.email,
+                    password: ""
                 }
-                let result = await usersModel.create(newUser)
-                const token=generateToken(newUser)
-                done(null, {result,token})
+                let result = await usersModel.create(newUser);
+                done(null, result)
             } else {
                 done(null, user)
             }
@@ -122,53 +115,35 @@ const initilizePassport = () => {
         clientSecret: "8d4aa4796fae63e2b1347e90878dac92",
         callbackURL: "http://localhost:8080/api/sessions/facebook/callback"
     }, async (accessToken, refreshToken, profile, done) => {
+        const user = await usersModel.findOne({
+            accountId: profile.id,
+            provider: "Facebook"
+        })
 
-        const name = profile.displayName.split(" ")
-
-        try {
-
-            let user = await usersModel.findOne({
+        if (!user) {
+            
+            const newUser = new usersModel({
+                first_name: profile.displayName,
                 accountId: profile.id,
-                provider: "facebook"
+                provider: "Facebook"
             })
-            if (!user) {
-
-                const newCart = new cartModel()
-                await newCart.save()
-
-                let newUser = {
-                    first_name: name[0],
-                    last_name: name[1],
-                    email: "",
-                    password: createHash(profile.id.toString()),
-                    age: 18,
-                    rol: "user",
-                    accountId: profile.id,
-                    provider: "facebook",
-                    cart:newCart
-                }
-
-                let result = await usersModel.create(newUser)
-                const token=generateToken(newUser)
-                done(null, {result,token})
-            } else {
-                done(null, user)
-            }
-
-
-        } catch (error) {
-            return done(error)
+            await newUser.save()
+            return done(null, profile)
+        } else {
+            console.log("El usuario ya existe en nuestra bd")
+            return done(null, profile)
         }
-    }
-    ))
+    }))
+
 
     /// Serialize and Deserialize ///
 
     passport.serializeUser((user, done) => {
         done(null, user._id)
     })
-    passport.deserializeUser(async (id, done) => {
-        let user = await usersModel.findById({ _id: id })
+
+    passport.deserializeUser( async (id, done) => {
+        let user = await usersModel.findById({_id:id})
         done(null, user)
     })
 
@@ -179,6 +154,7 @@ const initilizePassport = () => {
         secretOrKey: secretKey
     }, async (jwt_payload, done) => {
         try {
+            
             const user = await usersModel.findById(jwt_payload.user._id)
             if (!user) {
                 return done(null, false)
@@ -207,3 +183,31 @@ module.exports = initilizePassport
 
 
 
+// const name = profile.displayName.split(" ")
+
+// try {
+
+//     let user = await usersModel.findOne({
+//         accountId: profile.id,
+//         provider: "facebook"
+//     })
+//     if (!user) {
+
+//         // const newCart = new cartModel()
+//         // await newCart.save()
+
+//         let newUser = {
+//             first_name: name[0],
+//             last_name: name[1],
+//             email: "",
+//             password: createHash(profile.id.toString()),
+//             age: 18,
+//             rol: "user",
+//             accountId: profile.id,
+//             provider: "facebook",
+            
+//         }
+//         // cart:newCart
+
+//         let result = await usersModel.create(newUser)
+//         // const token=generateToken(newUser)

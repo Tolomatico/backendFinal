@@ -1,4 +1,4 @@
-const response = require("../utils/reusables.js")
+const { response } = require("../utils/reusables.js")
 const ticketModel = require("../models/ticket.model")
 const { generateCode, totalAmount } = require("../utils/equations")
 const usersModel = require("../models/users.model.js")
@@ -6,6 +6,8 @@ const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
 const ProductManager = require("../dao/db/product-manager-db.js")
 const productManager = new ProductManager()
+const Toastify=require("toastify-js")
+
 
 class CartController {
 
@@ -96,9 +98,9 @@ class CartController {
 
         try {
             const product = await cartManager.addProducts(cartId, productId, quantity)
-            
+
             req.logger.info(`Se agrego el producto al carrito: ${product}`)
-           response(res,201,`Se agregado el producto al carrito correctamente`)
+            response(res, 201, `Se agregado el producto al carrito correctamente`)
         } catch (error) {
             req.logger.error(`Error al agregar el producto:${error}`)
         }

@@ -7,10 +7,10 @@ class ProductManager {
     async addProduct(product) {
 
         
-        let { title, description, price, thumbnail, code, stock,status,category,img } = product
+        let { title, description, price, thumbnail, code, stock,status,category,img,owner } = product
 
         try {
-            if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img) {
+            if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img || !owner) {
                 console.log("Existen campos vacios,por favor, completarlos")
                 return
             }
@@ -31,7 +31,8 @@ class ProductManager {
                 status,
                 code,
                 stock,
-                category
+                category,
+                owner
             })
             await newProduct.save()
         } catch (error) {

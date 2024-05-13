@@ -1,15 +1,155 @@
 const userModel = require("../models/users.model.js")
 const cartModel = require("../models/carts.model.js")
 const { isValidPassword, createHash } = require("../utils/hashBcrypt.js")
-const response = require("../utils/reusables.js")
+const { response, verifyEmail } = require("../utils/reusables.js")
 const generateToken = require("../utils/jsonwebtoken.js")
 const UserDTO = require("../dto/user.dto.js")
 const UserManager = require("../dao/db/user-manager-db.js")
+const transport = require("../config/transport.js")
 const userManager = new UserManager()
+const bcrypt = require("bcrypt")
+const generateTokenRecover = require("../utils/token.js")
+const usersModel = require("../models/users.model.js")
+
+
 
 
 
 class userController {
+
+    async changeRole(req,res){
+       const id=req.params.uid
+       
+        try {
+           const user= await usersModel.findById(id)
+           
+            if(!user)return response(res,401,"El usuario no existe.")
+            
+           const newRol =user.rol==="user"? "premium":"user"
+       
+           await usersModel.findByIdAndUpdate(id,{rol:newRol},{new:true})
+
+          response(res,201,`El usuario cambio su rol a: ${newRol}`)
+
+
+        } catch (error) {
+            response(res,401,"Error al querer cambiar de rol.")
+        }
+
+
+    }
+
+    async recover(req, res) {
+        const { email } = req.body
+       
+        try {
+
+            if (!verifyEmail(email)) {
+                return res.render("passrecover", {
+                    error: "Ingrese un email válido."
+                })
+            }
+            const user = await userManager.getUser(email)
+            if (!user) {
+                return res.render("passrecover", {
+                    error: "No existe un usuario con ese email."
+                })
+            }
+           
+            const tokenRecover = generateTokenRecover()
+
+            user.token=tokenRecover
+             
+        
+            await user.save()
+
+            transport.sendMail({
+                from: "BackendCoderhouse",
+                to: user.email,
+                subject: "Recupera tu password",
+                text: "Recupera tu password",
+                html: `
+                    <p>Hola ${user.first_name}, recupera tu password.</p>
+        
+                    <p>Ingresa al siguiente enlace para recuperar tu password:
+                    <a href="http://localhost:8080/api/users/recover/${tokenRecover}">Recuperar password</a></p>
+                `
+            })
+
+            return res.cookie("cookieToken",
+            tokenRecover,
+                {
+                    maxAge: 60000,
+                    httpOnly: true
+                }).render("message", {
+                    pag: "Reestablecer el Password",
+                    message: "Hemos envíado un email ah:",
+                    email: user.email
+                })
+
+        } catch (error) {
+            response(res, 404, "Error al recibir el mail.")
+        }
+    }
+
+    async getRecover(req, res) {
+        const tokenRecover = req.cookies.cookieToken
+        if (tokenRecover) {
+            const expirationDate = new Date(req.cookies.cookieToken.expires)
+            const isExpired = expirationDate <= new Date()
+
+            if (isExpired) {
+
+                return res.render("message", {
+                    pag: "Reestablecer el password",
+                    message: "El tiempo para restablecer el password ah caducado"
+                })
+            } else {
+
+                return res.render("passchange")
+            }
+        } else {
+            return res.render("message", {
+                pag: "Reestablecer el password",
+                message: "El tiempo para restablecer el password ah caducado"
+            })
+        }
+
+
+
+    }
+
+    async recoverPassword(req, res) {
+        const tokenRecover = req.params.token
+        
+        const user = await userManager.getUserByToken(tokenRecover)
+        console.log(user)
+        const { password, repited } = req.body
+        const repitedPasswords = bcrypt.compareSync(password, user.password)
+
+        if (password.length < 6) {
+            return res.render("passchange", {
+                error: "El password debe tener almenos 6 caracteres"
+            })
+        }
+        if (password !== repited) {
+            return res.render("passchange", {
+                error: "Los passwords deben coincidir"
+            })
+
+        }
+
+        if (repitedPasswords) {
+            return res.render("passchange", {
+                error: "El password debe ser distinto al anterior"
+            })
+        }
+
+        user.password = createHash(password)
+        user.token=""
+        await user.save()
+        return res.redirect("/login")
+    }
 
     async register(req, res) {
 
@@ -53,16 +193,27 @@ class userController {
 
     async login(req, res) {
         const { email, password } = req.body
-
         try {
+            if (!verifyEmail(email)) {
+                return res.render("login", {
+                    error: "Ingrese un email válido"
+                })
+            }
+
+
+
             const user = await userManager.getUser(email)
             if (!user) {
-                req.logger.warn("No existe un usuario con ese email.")
-                location.reload()
+                return res.render("login", {
+                    error: "No existe un usuario con ese email"
+                })
             }
+
             if (!isValidPassword(password, user)) {
-                req.logger.warn("La contraseña no es válida.")
-                location.reload()
+                return res.render("login", {
+                    error: "La contraseña no es correcta",
+                    email: email
+                })
             }
 
 
@@ -88,6 +239,11 @@ class userController {
     async profile(req, res) {
 
         try {
+
+            if (req.session.login) {
+
+                return res.render("profile", { user: req.session.user })
+            }
             const userDto = new UserDTO(
                 req.user.first_name,
                 req.user.last_name,
@@ -96,8 +252,11 @@ class userController {
                 req.user.cart
             )
 
-            const isAdmin = req.user.rol === 'admin';
-            res.render("profile", { user: userDto, isAdmin: isAdmin })
+            const isAdmin = req.user.rol === 'admin'
+            const isUser=req.user.rol ==="user"
+            const isPremium=req.user.rol ==="premium"
+
+            res.render("profile", { user: userDto, isAdmin: isAdmin,isUser: isUser,isPremium: isPremium })
         } catch (error) {
             res.status(500).json({ message: "Error al cargar la página:", error })
         }
@@ -105,8 +264,20 @@ class userController {
     }
 
     async logout(req, res) {
-        res.clearCookie("cookieToken")
-        res.redirect("/login")
+
+        try {
+
+            if (req.session.login) {
+                req.session.destroy()
+                return res.redirect("/login")
+            }
+            res.clearCookie("cookieToken")
+            return res.redirect("/login")
+
+        } catch (error) {
+            res.status(500).json({ message: "Error al cerrar sesión:", error })
+        }
+
     }
 
 }

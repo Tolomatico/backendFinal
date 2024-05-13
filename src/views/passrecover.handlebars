@@ -1,0 +1,24 @@
+<div class="mt-8 mx-auto max-w-md">
+    <div class="bg-white py-8 px-4 shadow">
+
+        <form class="space-y-5" action="/api/users/recover" method="POST" enctype="application/x-www-form-urlencoded">
+            <legend class="text-center text-2xl font-extrabold">Reestablece tu contraseña</legend>
+            <label class="block text-sm uppercase text-gray-500 mb-2 font-bold">Ingresar Email</label>
+            <input class="w-full px-3 py-2 border border-gray-300 border rounded-md placeholder-gray-400" type="mail"
+                placeholder="email" name="email" required>
+
+
+            <input class="w-full bg-blue-600 rounded-lg hover:bg-blue-700 text-white font-bold py-3 cursor-pointer"
+                type="submit" value="Ingresar">
+           
+           {{#if error}}
+            <p class="border uppercase bg-red-500 rounded-md text-center text-white p-1 font-bold">{{error}}</p>
+           {{/if}}
+        </form>
+        <div class="flex justify-between my-5">
+            <a class="text-gray-500 font-bold text-xs" href="/login">ya estas registrado? Inicia sesión aquí</a>
+            <a class="text-gray-500 font-bold text-xs" href="/register">No estas reguistrado? Registrate aquí</a>
+        </div>
+    </div>
+
+</div>

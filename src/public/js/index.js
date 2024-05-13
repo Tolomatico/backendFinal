@@ -58,7 +58,8 @@ const agregarProducto = () => {
         code: document.getElementById("code").value,
         stock: document.getElementById("stock").value,
         category: document.getElementById("category").value,
-        img:document.getElementById("img").value
+        img:document.getElementById("img").value,
+        owner:document.getElementById("owner").value
 
     }
     console.log(newProduct)
