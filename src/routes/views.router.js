@@ -32,6 +32,4 @@ router.get("/message",viewController.renderMessage)
 
 
 
-
-
 module.exports = router

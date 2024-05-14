@@ -3,7 +3,7 @@ const {faker} = require("@faker-js/faker")
 const generateProducts=()=>{
 
     return {
-        _id:faker.database.mongodbObjectId(),
+        
         title:faker.commerce.productName(),
         description:faker.commerce.productDescription(),
         price:faker.commerce.price(),
@@ -13,6 +13,8 @@ const generateProducts=()=>{
         stock:parseInt(faker.string.numeric()),
         status:faker.datatype.boolean(),
         category:faker.commerce.productMaterial(),
+        owner:"admin",
+        
 
     }
 }

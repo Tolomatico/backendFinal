@@ -6,6 +6,8 @@ const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
 const { totalCart } = require("../utils/equations.js")
 const generateProducts = require("../utils/generateProducts.js")
+const ProductManager=require("../dao/db/product-manager-db.js")
+const manager=new ProductManager()
 
 class ViewController {
 
@@ -232,7 +234,7 @@ class ViewController {
                 products.push(generateProducts())
             }
 
-            response(res, 200, products)
+            res.json(products)
 
         } catch (error) {
             response(res, 404, "Error al cargar productos del mock")
@@ -252,6 +254,7 @@ class ViewController {
         res.render("message")
     }
 
+    
 }
 
 module.exports = ViewController
