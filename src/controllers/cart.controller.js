@@ -95,12 +95,19 @@ class CartController {
         const cartId = req.params.cid
         const productId = req.params.pid
         const quantity = req.body.quantity || 1
+        const user=req.user
 
         try {
-            const product = await cartManager.addProducts(cartId, productId, quantity)
+            const productOwner= await productManager.getProductById(productId)
+            
+            if(productOwner.owner!==user.email){
+                const product = await cartManager.addProducts(cartId, productId, quantity)
 
-            req.logger.info(`Se agrego el producto al carrito: ${product}`)
-            response(res, 201, `Se agregado el producto al carrito correctamente`)
+                req.logger.info(`Se agrego el producto al carrito: ${product}`)
+                
+
+            }return res.json("No puedes comprar tus productos")
+            
         } catch (error) {
             req.logger.error(`Error al agregar el producto:${error}`)
         }

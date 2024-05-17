@@ -173,11 +173,17 @@ class ViewController {
         }
     }
 
+    async renderCarts(req,res){
+        res.render("carts")
+
+    }
+
     async renderCart(req, res) {
         const id = req.params.id
-
+        
         try {
 
+           
             const userDto = new UserDTO(
                 req.user.first_name,
                 req.user.last_name,

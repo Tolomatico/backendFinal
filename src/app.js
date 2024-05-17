@@ -5,7 +5,6 @@ const app = express()
 const PUERTO = 8080
 const exphbs = require("express-handlebars")
 const multer = require("multer")
-const socket = require("socket.io")
 const cookieParser = require("cookie-parser")
 const session = require('express-session')
 const passport = require("passport")
@@ -16,6 +15,8 @@ const compression=require("express-compression")
 const addLogger=require("./utils/logger.js")
 const {cpus}=require("os")
 const cpu=cpus().length
+const swaggerJSDoc=require("swagger-jsdoc")
+const swaggerUIExpress=require("swagger-ui-express")
 
 
 ///  Conexion a MONGO DB ///
@@ -36,6 +37,7 @@ const cartsRouter = require("./routes/carts.router")
 const viewsRouter = require("./routes/views.router")
 const usersRouter = require("./routes/users.router")
 const sessionRouter = require("./routes/session.router.js")
+const socketService = require("./socket/socket.js")
 
 /// Configuración de Multer ///
 const storage = multer.diskStorage({
@@ -83,40 +85,21 @@ const httpServer = app.listen(PUERTO, () => {
     console.log(`Escuchando en http://localhost:${PUERTO}`)
 })
 
-
-const ProductManager = require("./dao/db/product-manager-db.js")
-const manager = new ProductManager()
-const messagesModel = require("./models/messages.model.js")
-const io = socket(httpServer)
-
-io.on("connection", async (socket) => {
-
-    socket.on("message", async (data) => {
-
-        await messagesModel.create(data)
-
-        const messages = await messagesModel.find()
-
-        io.emit("messagesLogs", messages)
-    })
+socketService(httpServer)
 
 
-    socket.emit("productos", await manager.getProducts())
-    socket.on("eliminarProducto", async (id) => {
-        await manager.deleteProduct(id)
-        io.sockets.emit("productos", await manager.getProducts())
-    })
+const swaggerOptions={
+    definition:{
+        openapi:"3.0.1",
+        info:{
+            title:"Documentación app Ecommerce",
+            description:"App de venta de articulos online."
+        }
+    },
+    apis:["./src/docs/**/*.yaml"],
+}
 
-
-    socket.on("agregarProducto", async (newProduct) => {
-        await manager.addProduct(newProduct)
-        io.sockets.emit("productos", await manager.getProducts())
-    })
-
-})
-
-
-
-
+const specs=swaggerJSDoc(swaggerOptions)
+app.use("/apidocs",swaggerUIExpress.serve,swaggerUIExpress.setup(specs))
 
 

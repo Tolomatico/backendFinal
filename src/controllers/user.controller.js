@@ -17,23 +17,23 @@ const usersModel = require("../models/users.model.js")
 
 class userController {
 
-    async changeRole(req,res){
-       const id=req.params.uid
-       
-        try {
-           const user= await usersModel.findById(id)
-           
-            if(!user)return response(res,401,"El usuario no existe.")
-            
-           const newRol =user.rol==="user"? "premium":"user"
-       
-           await usersModel.findByIdAndUpdate(id,{rol:newRol},{new:true})
+    async changeRole(req, res) {
+        const id = req.params.uid
 
-          response(res,201,`El usuario cambio su rol a: ${newRol}`)
+        try {
+            const user = await usersModel.findById(id)
+
+            if (!user) return response(res, 401, "El usuario no existe.")
+
+            const newRol = user.rol === "user" ? "premium" : "user"
+
+            await usersModel.findByIdAndUpdate(id, { rol: newRol }, { new: true })
+
+            response(res, 201, `El usuario cambio su rol a: ${newRol}`)
 
 
         } catch (error) {
-            response(res,401,"Error al querer cambiar de rol.")
+            response(res, 401, "Error al querer cambiar de rol.")
         }
 
 
@@ -41,7 +41,7 @@ class userController {
 
     async recover(req, res) {
         const { email } = req.body
-       
+
         try {
 
             if (!verifyEmail(email)) {
@@ -55,12 +55,12 @@ class userController {
                     error: "No existe un usuario con ese email."
                 })
             }
-           
+
             const tokenRecover = generateTokenRecover()
 
-            user.token=tokenRecover
-             
-        
+            user.token = tokenRecover
+
+
             await user.save()
 
             transport.sendMail({
@@ -70,14 +70,15 @@ class userController {
                 text: "Recupera tu password",
                 html: `
                     <p>Hola ${user.first_name}, recupera tu password.</p>
-        
-                    <p>Ingresa al siguiente enlace para recuperar tu password:
-                    <a href="http://localhost:8080/api/users/recover/${tokenRecover}">Recuperar password</a></p>
+                    <p>${user.token}</p>
+                    <p>Ingresa el codigo para poder recuperar tu password:
+
+                    <a href="http://localhost:8080/api/users/recoverpassword">Recuperar password</a></p>
                 `
             })
 
             return res.cookie("cookieToken",
-            tokenRecover,
+                tokenRecover,
                 {
                     maxAge: 60000,
                     httpOnly: true
@@ -106,7 +107,9 @@ class userController {
                 })
             } else {
 
-                return res.render("passchange")
+                return res.render("passchange", {
+                    pag: "Cambia tu contraseña"
+                })
             }
         } else {
             return res.render("message", {
@@ -120,35 +123,56 @@ class userController {
     }
 
     async recoverPassword(req, res) {
-        const tokenRecover = req.params.token
-        
-        const user = await userManager.getUserByToken(tokenRecover)
-        console.log(user)
-        const { password, repited } = req.body
-        const repitedPasswords = bcrypt.compareSync(password, user.password)
 
-        if (password.length < 6) {
-            return res.render("passchange", {
-                error: "El password debe tener almenos 6 caracteres"
-            })
+        const { password, repited, token } = req.body
+
+        try {
+            const user = await userManager.getUserByToken(token)
+
+            if (!user) {
+                return res.render("passchange", {
+                    error: "Codigo de verificación inválido"
+                })
+
+            }
+
+            if (user) {
+
+                const repitedPasswords = bcrypt.compareSync(password, user.password)
+                if (password.length < 6) {
+                    return res.render("passchange", {
+                        error: "El password debe tener almenos 6 caracteres"
+                    })
+                }
+                if (password !== repited) {
+                    return res.render("passchange", {
+                        error: "Los passwords deben coincidir"
+                    })
+
+                }
+
+                if (repitedPasswords) {
+                    return res.render("passchange", {
+                        error: "El password debe ser distinto al anterior"
+                    })
+                }
+
+                user.password = createHash(password)
+                user.token = ""
+                await user.save()
+
+                return res.redirect("/login")
+            }
+
+
+        } catch (error) {
+            response(res, 404, "Error al cambiar contraseña")
+
         }
-        if (password !== repited) {
-            return res.render("passchange", {
-                error: "Los passwords deben coincidir"
-            })
 
-        }
 
-        if (repitedPasswords) {
-            return res.render("passchange", {
-                error: "El password debe ser distinto al anterior"
-            })
-        }
 
-        user.password = createHash(password)
-        user.token=""
-        await user.save()
-        return res.redirect("/login")
+
     }
 
     async register(req, res) {
@@ -253,10 +277,10 @@ class userController {
             )
 
             const isAdmin = req.user.rol === 'admin'
-            const isUser=req.user.rol ==="user"
-            const isPremium=req.user.rol ==="premium"
+            const isUser = req.user.rol === "user"
+            const isPremium = req.user.rol === "premium"
 
-            res.render("profile", { user: userDto, isAdmin: isAdmin,isUser: isUser,isPremium: isPremium })
+            res.render("profile", { user: userDto, isAdmin: isAdmin, isUser: isUser, isPremium: isPremium })
         } catch (error) {
             res.status(500).json({ message: "Error al cargar la página:", error })
         }
@@ -278,6 +302,11 @@ class userController {
             res.status(500).json({ message: "Error al cerrar sesión:", error })
         }
 
+    }
+
+    async getUsers(req, res) {
+        const users = await userManager.getUsers()
+        res.json(users)
     }
 
 }

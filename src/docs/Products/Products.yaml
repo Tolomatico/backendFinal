@@ -1,0 +1,93 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtenemos todos los products de la DB
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Se obtienen todos los datos
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:  
+                  $ref: "#components/schemas/Products"
+components:
+  schemas:
+    Products:
+      type: object
+      proterties: 
+        title:
+          type: String
+          required: true
+          index: true
+
+        description:
+          type: String
+          required: true
+
+        price:
+          type: Number
+          required: true
+
+        img:
+          type: String
+
+        thumbnail:
+          type: Array
+
+        code:
+          type: String
+          required: true
+          unique: true
+
+        stock:
+          type: Number
+          required: true
+
+        status:
+          type: Boolean
+          required: true
+
+        category:
+          type: String
+          required: true
+
+        owner:
+          type: String
+          required: true
+          default: "admin"
+      example:
+        _id: ObjectId("123456")
+        title: article example
+        description: example description
+        price: 200
+        img:  "imagen"
+        thumbnail:  ["img"]
+        code: asd123
+        stock:  10
+        status: true
+        category: example
+        owner:  example@example.com
+
+  requestBodies:
+    createUser:
+      type: object
+      proterties: 
+        first_name: 
+          type: string
+          description:  Nombre del Usuario
+        last_name: 
+          type: string
+          description:  Apellido del Usuario
+        password: 
+          type: string
+          description:  Password del Usuario
+      example:
+        _id: ObjectId("123456")
+        first_name: Tomás
+        last_name: Ballesty
+        password: asd123
+
+

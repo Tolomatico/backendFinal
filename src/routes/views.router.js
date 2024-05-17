@@ -12,11 +12,13 @@ router.get("/products", checkrole(["user","premium"]), viewController.renderProd
 router.get("/realtimeproducts", checkrole(["admin","premium"]), viewController.renderRealTimeProducts)
 router.get("/chat", checkrole(["user","premium"]), viewController.renderChat)
 router.get("/mailing", viewController.renderMail)
+router.get("/carts/", viewController.renderCarts)
 router.get("/carts/:id", viewController.renderCart)
 router.get("/mockingproducts",viewController.mockingProducts)
 router.get("/loggertest",viewController.renderLogger)
 router.get("/passrecover",viewController.renderPassrecover)
 router.get("/message",viewController.renderMessage)
+
 
 
 

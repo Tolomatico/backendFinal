@@ -23,6 +23,16 @@ class UserManager {
         }
     }
 
+    async getUsers() {
+
+        try {
+            return userModel.find()
+
+        } catch (error) {
+            console.log(`Error al buscar usuarios en la base de datos: ${error}`)
+        }
+    }
+
     async getUserById(id) {
 
         try {
