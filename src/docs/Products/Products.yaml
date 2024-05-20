@@ -6,58 +6,135 @@ paths:
         - Products
       responses:
         "200":
-          description: Se obtienen todos los datos
+          description: Se obtienen todos los productos de la base de datos
           content: 
             application/json:
               schema:
                 type: array
                 items:  
                   $ref: "#components/schemas/Products"
+        "404":
+          description: Error al obtener a los productos de la DB
+    post:
+      summary: Crear producto   
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: "#components/requestBody/createProduct"
+      responses:
+        "201":
+          description: Producto creado correctamente
+        "400":
+            description: Error al crear el producto
+
+
+
+
+
+
+  /api/products/{id}:
+    get:
+      summary: Se obtiene un producto a partir de su id
+      tags: 
+        - Products
+      parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del producto que desea buscar
+        schema: 
+            type: string
+      responses:
+        "200":
+            description: Se obtiene el producto con ese id
+            content: 
+              application/json:
+                schema:  
+                    $ref: "#components/schemas/Products"
+        "404":
+          description: Error al obtener el producto de la DB
+    put:
+      summary: Actualizar producto
+      tags: 
+        - Products
+      parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del producto que desea actualizar
+        schema: 
+          type: string    
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              $ref: "#components/requestBody/updateProduct"       
+      responses:
+        "201":
+          description: Producto actualizado correctamente
+        "400":
+            description: Error al actualizar el producto
+    delete:
+      summary: Eliminar producto
+      tags:
+        - Products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Id del producto que desea eliminar
+        schema: 
+          type: string
+      responses:
+        "200":
+            description: Se elimino el producto
+            content: 
+              application/json:
+                schema:  
+                    $ref: "#components/schemas/Products"
+        "404":
+          description: Error al eliminar el producto de la DB
+
 components:
   schemas:
     Products:
       type: object
       proterties: 
+        _id:  
+          type: ObjectId
+          description: Id generado por MongoDb
         title:
           type: String
-          required: true
-          index: true
-
-        description:
-          type: String
-          required: true
-
+          description: Título del producto
         price:
           type: Number
-          required: true
-
+          description: Precio del producto
         img:
           type: String
-
+          description: Imagen del producto
         thumbnail:
           type: Array
-
+          description: Precio del producto
         code:
           type: String
-          required: true
-          unique: true
-
+          description: Código del producto
         stock:
           type: Number
-          required: true
-
+          description: Stock del producto
         status:
           type: Boolean
-          required: true
-
+          description: Estado de disponibilidad del producto
         category:
           type: String
-          required: true
-
+          description: Categoría del producto
         owner:
           type: String
-          required: true
-          default: "admin"
+          description: Dueño del producto
       example:
         _id: ObjectId("123456")
         title: article example
@@ -70,24 +147,98 @@ components:
         status: true
         category: example
         owner:  example@example.com
-
-  requestBodies:
-    createUser:
+  requestBody:
+    createProduct:
       type: object
-      proterties: 
-        first_name: 
-          type: string
-          description:  Nombre del Usuario
-        last_name: 
-          type: string
-          description:  Apellido del Usuario
-        password: 
-          type: string
-          description:  Password del Usuario
+      properties: 
+        title:
+          type: String
+          description: Título del producto
+        price:
+          type: Number
+          description: Precio del producto
+        img:
+          type: String
+          description: Imagen del producto
+
+        thumbnail:
+          type: Array
+          description: Precio del producto
+
+        code:
+          type: String
+          description: Código del producto
+
+        stock:
+          type: Number
+          description: Stock del producto
+
+        status:
+          type: Boolean
+          description: Estado de disponibilidad del producto
+
+        category:
+          type: String
+          description: Categoría del producto
+
+        owner:
+          type: String
+          description: Dueño del producto
       example:
-        _id: ObjectId("123456")
-        first_name: Tomás
-        last_name: Ballesty
-        password: asd123
+        title: article example
+        description: example description
+        price: 200
+        img:  "imagen"
+        thumbnail:  ["img"]
+        code: asd123
+        stock:  10
+        status: true
+        category: example
+        owner:  example@example.com
+    updateProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Título del producto
+        price:
+          type: Number
+          description: Precio del producto
+        img:
+          type: String
+          description: Imagen del producto
 
+        thumbnail:
+          type: Array
+          description: Precio del producto
 
+        code:
+          type: String
+          description: Código del producto
+
+        stock:
+          type: Number
+          description: Stock del producto
+
+        status:
+          type: Boolean
+          description: Estado de disponibilidad del producto
+
+        category:
+          type: String
+          description: Categoría del producto
+
+        owner:
+          type: String
+          description: Dueño del producto
+      example:
+        title: article example
+        description: example description
+        price: 200
+        img:  "imagen"
+        thumbnail:  ["img"]
+        code: asd123
+        stock:  10
+        status: true
+        category: example
+        owner:  example@example.com

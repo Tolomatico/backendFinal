@@ -1,0 +1,87 @@
+paths:
+  /api/carts:
+    get:
+      summary: Obtenemos todos los carritos de la DB
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Se obtienen todos los carritos de la base de datos
+          content: 
+            application/json:
+              schema:
+                $ref: "#components/schemas/Carts"
+        "404":
+          description: Error al obtener a los carritos de la DB
+
+          
+  /api/carts/{id}:
+    get:
+      summary: Se obtiene un carrito a partir de su id
+      tags: 
+        - Carts
+      parameters: 
+      - name: id
+        in: path
+        required: true
+        description: Id del carrito que desea buscar
+        schema: 
+            type: string
+      responses:
+        "200":
+            description: Se obtiene el carrito con ese id
+            content: 
+              application/json:
+                schema:  
+                    $ref: "#components/schemas/Carts"
+        "404":
+          description: Error al obtener el carrito de la DB
+
+
+
+
+components:
+  schemas:
+    Products:
+      type: object
+      proterties: 
+        product:
+          type: ObjectId
+          description: Id del producto
+          
+        quantity:
+          type: Number
+          description: Cantidad del producto
+          example: 123123
+        _id:  
+          type: ObjectId
+          description: Id generado por MongoDb
+          
+      example:
+        product: ObjectId("123456")
+        quantity: 123
+        _id: ObjectId("123456")
+
+    Carts:
+      type: object
+      proterties: 
+        _id:  
+          type: ObjectId
+          description: Id generado por MongoDb
+        products: 
+          type: Array
+          description: Array de los productos en el carrito
+          items: 
+            $ref: "#components/schemas/Products"
+      example: 
+        _id: ObjectId("123456")
+        products: [{
+          product: ObjectId("123456"),
+          quantity: 123,
+          _id: ObjectId("123456")}
+        ]
+      
+        
+
+    
+        
