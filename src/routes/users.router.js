@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const UserController = require("../controllers/user.controller.js")
+const authMiddleware = require("../middleware/authmiddleware.js")
 const userController = new UserController()
 
 
@@ -13,4 +14,5 @@ router.post("/recover",userController.recover.bind(userController))
 router.get("/recoverpassword/",userController.getRecover.bind(userController))
 router.post("/recoverpassword",userController.recoverPassword.bind(userController))
 router.put("/premium/:uid",userController.changeRole.bind(userController))
+router.get("/current",userController.current)
 module.exports = router

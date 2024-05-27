@@ -3,6 +3,15 @@ const userModel = require("../../models/users.model.js")
 
 class UserManager {
 
+    async save(data){
+        try {
+            return userModel.create(data)
+            
+        } catch (error) {
+            console.log("Error al crear el usuario")
+        }
+    }
+
     async getUserByToken(token) {
 
         try {
@@ -16,7 +25,7 @@ class UserManager {
     async getUser(email) {
 
         try {
-            return userModel.findOne({ email })
+            return userModel.findOne({ email:email })
 
         } catch (error) {
             console.log(`Error al buscar al usario en la base de datos: ${error}`)
@@ -36,7 +45,7 @@ class UserManager {
     async getUserById(id) {
 
         try {
-            return userModel.findById({ id })
+            return userModel.findById({ id:id })
 
         } catch (error) {
             console.log(`Error al buscar al usario en la base de datos: ${error}`)

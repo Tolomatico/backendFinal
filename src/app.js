@@ -39,22 +39,6 @@ const usersRouter = require("./routes/users.router")
 const sessionRouter = require("./routes/session.router.js")
 const socketService = require("./socket/socket.js")
 
-/// Configuración de Multer ///
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "./src/public/img")
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname)
-    }
-})
-const upload = multer({ storage })
-app.post("/upload", upload.single("img"), (req, res) => {
-    res.send("Subido con exito")
-})
-
-
-
 ///  AuthMiddleware  ///
 initilizePassport()
 app.use(session({
@@ -64,7 +48,6 @@ app.use(session({
   }))
 app.use(addLogger)
 app.use(cookieParser())
-
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(authMiddleware)

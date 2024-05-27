@@ -14,8 +14,9 @@ const usersModel = require("../models/users.model.js")
 
 
 
-
 class userController {
+
+   
 
     async changeRole(req, res) {
         const id = req.params.uid
@@ -187,7 +188,7 @@ class userController {
             const newCart = new cartModel()
             await newCart.save()
 
-            const newUser = await userModel.create({
+            const newUser = await userManager.save({
                 first_name,
                 last_name,
                 email,
@@ -197,15 +198,9 @@ class userController {
                 cart: newCart
             })
 
-            const token = generateToken({ user: newUser })
 
-            res.cookie("cookieToken",
-                token,
-                {
-                    maxAge: 3600000,
-                    httpOnly: true
-                })
-                .redirect("/api/users/profile")
+
+            res.status(201).json({ status: "success", message: "Usuario registrado correctamente", payload: newUser })
 
 
 
@@ -286,6 +281,13 @@ class userController {
         }
 
     }
+
+    async current (req, res){
+        const user=req.user
+        res.send({message:"Usuario encontrado en la request",payload:user})
+    }
+
+
 
     async logout(req, res) {
 

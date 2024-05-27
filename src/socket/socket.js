@@ -19,17 +19,17 @@ function socketService(httpServer){
         })
     
     
-        socket.emit("productos", await manager.getProducts())
-        socket.on("eliminarProducto", async (id) => {
-            await manager.deleteProduct(id)
-            io.sockets.emit("productos", await manager.getProducts())
-        })
+         socket.emit("productos", await manager.getProducts())
+         socket.on("eliminarProducto", async (id) => {
+             await manager.deleteProduct(id)
+             io.sockets.emit("productos", await manager.getProducts())
+         })
     
     
-        socket.on("agregarProducto", async (newProduct) => {
-            await manager.addProduct(newProduct)
-            io.sockets.emit("productos", await manager.getProducts())
-        })
+        // socket.on("agregarProducto", async (newProduct) => {
+        //     await manager.addProduct(newProduct)
+        //     io.sockets.emit("productos", await manager.getProducts())
+        // })
     
     })
 }

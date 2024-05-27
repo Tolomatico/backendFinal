@@ -36,7 +36,7 @@ const renderProducts = (productos) => {
             const productCard = document.createElement("div")
             productCard.classList.add("card")
             productCard.innerHTML = `
-                <img class="img" src='${element.thumbnail[0]}'/> 
+                <img class="img " src='/img/${element.thumbnail[0]}'/> 
                 <p>Id :${element._id}</p>
                 <p>${element.title}</p>
                 <p>Precio:$${element.price}</p>
@@ -73,34 +73,34 @@ const eliminarProducto = (id) => {
     socket.emit("eliminarProducto", id)
 }
 
-const btnSend = document.getElementById("btnSend")
+// const btnSend = document.getElementById("btnSend")
 
-btnSend.addEventListener("click", () => {
+// btnSend.addEventListener("click", () => {
 
-    agregarProducto()
+//     agregarProducto()
 
-})
-
-
-const agregarProducto = () => {
-    const newProduct = {
-
-        title: document.getElementById("title").value,
-        description: document.getElementById("description").value,
-        price: document.getElementById("price").value,
-        thumbnail: document.getElementById("img").value,
-        status: document.getElementById("status").value,
-        code: document.getElementById("code").value,
-        stock: document.getElementById("stock").value,
-        category: document.getElementById("category").value,
-        img: document.getElementById("img").value,
-        owner: document.getElementById("owner").value
-
-    }
+// })
 
 
+// const agregarProducto = () => {
+//     const newProduct = {
+
+//         title: document.getElementById("title").value,
+//         description: document.getElementById("description").value,
+//         price: document.getElementById("price").value,
+//         thumbnail: document.getElementById("img").value,
+//         status: document.getElementById("status").value,
+//         code: document.getElementById("code").value,
+//         stock: document.getElementById("stock").value,
+//         category: document.getElementById("category").value,
+//         img: document.getElementById("img").value,
+//         owner: document.getElementById("owner").value
+
+//     }
 
 
-    socket.emit("agregarProducto", newProduct)
 
-}
+
+//     socket.emit("agregarProducto", newProduct)
+
+// }
