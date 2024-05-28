@@ -15,14 +15,15 @@ class ProductController {
     }
     async newProduct(req, res) {
         const newProduct = req.body
-        console.log(req.file)
+       
         try {
             if (req.file) {
                 newProduct.thumbnail = req.file.filename
             }
 
-            await manager.addProduct(newProduct);
-            res.send({ status: "success", message: "Producto creado correctamente" });
+          const product=await manager.addProduct(newProduct)
+
+            res.json({ status: "success", message: "Producto creado correctamente",payload:product });
         } catch (error) {
             res.status(400).send({ status: "error", error });
         }

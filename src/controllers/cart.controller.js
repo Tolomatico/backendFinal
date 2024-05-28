@@ -95,15 +95,15 @@ class CartController {
         const cartId = req.params.cid
         const productId = req.params.pid
         const quantity = req.body.quantity || 1
-        const user=req.user
+        const {email}=req.user || "test@example.com"
 
         try {
             const productOwner= await productManager.getProductById(productId)
             
-            if(productOwner.owner!==user.email){
-                const product = await cartManager.addProducts(cartId, productId, quantity)
+            if(productOwner.owner!==email){
+                const cart = await cartManager.addProducts(cartId, productId, quantity)
 
-                req.logger.info(`Se agrego el producto al carrito: ${product}`)
+               res.json({status:"success",message:"Se agrego el producto al carrito",payload:cart})
                 
 
             }return res.json("No puedes comprar tus productos")

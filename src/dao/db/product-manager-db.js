@@ -22,7 +22,7 @@ class ProductManager {
             }
     
     
-            const newProduct =new productsModel ({
+            const newProduct ={
                 title,
                 description,
                 img,
@@ -33,8 +33,8 @@ class ProductManager {
                 stock,
                 category,
                 owner
-            })
-            await newProduct.save()
+            }
+           return productsModel.create(newProduct)
         } catch (error) {
             console.log(error)
         }
