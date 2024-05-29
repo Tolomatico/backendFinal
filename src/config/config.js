@@ -4,7 +4,7 @@ const program=require("../utils/commander.js")
 const {mode}=program.opts()
 
 dotenv.config({
-    path:mode==="production" ? "./.env.production" : "./.env.develop"
+    path:mode==="production" ? "./.env" : "./.env.develop"
 })
 
 const configObject={
