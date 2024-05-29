@@ -2,7 +2,8 @@
 
 const express = require("express")
 const app = express()
-const PUERTO = 8080
+const configObject= require("./config/config.js")
+const PUERTO=configObject.puerto
 const exphbs = require("express-handlebars")
 const multer = require("multer")
 const cookieParser = require("cookie-parser")

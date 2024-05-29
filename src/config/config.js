@@ -11,7 +11,8 @@ const configObject={
     mongo_url:process.env.MONGO_URL,
     secretKey:process.env.SECRET_KEY,
     logger:process.env.LOGGER,
-    base_url:process.env.BASE_URL
+    base_url:process.env.BASE_URL,
+    puerto:process.env.PUERTO
 }
 
 module.exports=configObject
