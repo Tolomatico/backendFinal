@@ -32,6 +32,16 @@ class UserManager {
         }
     }
 
+    async get(data) {
+
+        try {
+            return userModel.findOne(data)
+
+        } catch (error) {
+            console.log(`Error al buscar al usario en la base de datos: ${error}`)
+        }
+    }
+
     async getUsers() {
 
         try {
@@ -43,12 +53,22 @@ class UserManager {
     }
 
     async getUserById(id) {
-
+        
         try {
             return userModel.findById({ id:id })
 
         } catch (error) {
             console.log(`Error al buscar al usario en la base de datos: ${error}`)
+        }
+    }
+
+    async delete(id){
+       
+        try {
+            return userModel.findOneAndDelete(id)
+            
+        } catch (error) {
+            console.log("Error al eliminar el usuario",error)
         }
     }
 

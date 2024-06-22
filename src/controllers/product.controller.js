@@ -1,6 +1,6 @@
 const ProductManager = require("../dao/db/product-manager-db.js")
 const manager = new ProductManager()
-const upload = require("../utils/multer.js")
+const { upload } = require("../utils/multer.js")
 
 class ProductController {
 
@@ -15,17 +15,18 @@ class ProductController {
     }
     async newProduct(req, res) {
         const newProduct = req.body
-       
+
         try {
             if (req.file) {
                 newProduct.thumbnail = req.file.filename
             }
 
-          const product=await manager.addProduct(newProduct)
-
-            res.json({ status: "success", message: "Producto creado correctamente",payload:product });
+            await manager.addProduct(newProduct)
+         
+            return res.status(201).json({ status: "success", message: "Producto creado correctamente" });
+         
         } catch (error) {
-            res.status(400).send({ status: "error", error });
+            res.status(400).json({ status: "error", error: "Error al crear el producto" });
         }
     }
 
@@ -54,7 +55,7 @@ class ProductController {
             res.send(products)
         }
     }
-   
+
     async updateProduct(req, res) {
         const { id } = req.params;
         const { title, description, price, thumbnail, status, code, stock } = req.body;
@@ -62,9 +63,9 @@ class ProductController {
 
         try {
             await manager.updateProduct(id, updatedProduct)
-            res.send({ status: "success", message: "Producto actualizado correctamente" })
+            res.status(200).json({ status: "success", message: "Producto actualizado correctamente" })
         } catch (error) {
-            res.status(400).send({ status: "error", message: error.message })
+            res.status(400).send({ status: "error", error: "Error al actualizar el producto" })
         }
     }
     async deleteProduct(req, res) {
@@ -73,9 +74,9 @@ class ProductController {
         try {
 
             await manager.deleteProduct(id)
-            res.send({ status: "success", message: "Producto eliminado correctamente" })
+            res.status(200).json({ status: "success", message: "Producto eliminado correctamente" })
         } catch (error) {
-            res.status(400).send({ status: "error", message: error.message })
+            res.status(400).send({ status: "error", error: "Error al borrar el producto" })
         }
     }
 

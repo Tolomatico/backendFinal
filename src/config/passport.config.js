@@ -12,66 +12,10 @@ const configObject = require("./config.js")
 const { secretKey } = configObject
 const cartModel=require("../models/carts.model.js")
 const generateToken = require("../utils/jsonwebtoken.js")
+const UserManager=require("../dao/db/user-manager-db.js")
+const userManager=new UserManager()
 
 const initilizePassport = () => {
-
-    // /// Register Strategy ///
-
-    // passport.use("register", new LocalStrategy({
-    //     passReqToCallback: true,
-    //     usernameField: "email"
-    // }, async (req, username, password, done) => {
-    //     const { first_name, last_name, email, age, rol } = req.body
-    //     try {
-    //         let user = await usersModel.findOne({ email })
-    //         if (user) {
-    //             return done(null, false)
-    //         } else {
-    //             let newUser = {
-    //                 first_name,
-    //                 last_name,
-    //                 email,
-    //                 password: createHash(password.toString()),
-    //                 age,
-    //                 rol: rol ? rol : "user"
-    //             }
-               
-    //             let result = await usersModel.create(newUser)
-
-                
-    //             return done(null, result)
-    //         }
-    //     } catch (error) {
-    //         return done(error)
-    //     }
-
-    // }))
-
-    // /// Login Strategy ///
-
-    // passport.use("login", new LocalStrategy({
-    //     usernameField: "email"
-    // }, async (email, password, done) => {
-    //     try {
-    //         const user = await usersModel.findOne({ email })
-    //         if (!user) {
-    //             console.log("No existe un usuario con ese email.")
-    //             return done(null, false)
-    //         } else {
-    //             if (!isValidPassword(password.toString(), user)) {
-    //                 return done(null, false)
-    //             } else {
-    //                 return done(null, user)
-    //             }
-    //         }
-
-    //     } catch (error) {
-    //         return done(error)
-    //     }
-    // }
-    // ))
-
-
 
     /// Github strategy ///
 
@@ -143,7 +87,7 @@ const initilizePassport = () => {
     })
 
     passport.deserializeUser( async (id, done) => {
-        let user = await usersModel.findById({_id:id})
+        let user = await userManager.getUserById({_id:id})
         done(null, user)
     })
 
@@ -153,9 +97,10 @@ const initilizePassport = () => {
         jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
         secretOrKey: secretKey
     }, async (jwt_payload, done) => {
+      
         try {
             
-            const user = await usersModel.findById(jwt_payload.user._id)
+            const user = await userManager.getUser(jwt_payload.user.email)
             if (!user) {
                 return done(null, false)
             }

@@ -1,9 +1,9 @@
 const multer = require("multer")
-const configuracionMulter = {
+const configurationMulter = {
     storage: fileStorage = multer.diskStorage(
         {
             destination: (req, file, cb) => {
-                cb(null,__dirname + ('../../public/img'))
+                cb(null, __dirname + ('../../public/img'))
             },
             filename: (req, file, cb) => {
                 cb(null, `${Date.now()}-${file.originalname}`)
@@ -12,7 +12,38 @@ const configuracionMulter = {
     )
 }
 
+const configurationMulterDocuments = {
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            let destinationFolder;
+            switch (file.fieldname) {
+                case "profile":
+                    destinationFolder = "./src/uploads/profiles";
+                    break;
+                case "products":
+                    destinationFolder = "./src/uploads/products";
+                    break;
+                case "document":
+                default:
+                    destinationFolder = "./src/uploads/documents";
+            }
 
-const upload = multer(configuracionMulter).single("thumbnail")
+            cb(null, destinationFolder)
+        },
+        filename: (req, file, cb) => {
+            cb(null, file.originalname)
+        }
+    })
+}
 
-module.exports = upload
+
+
+const upload = multer(configurationMulter).single("thumbnail")
+const uploads = multer(configurationMulterDocuments).fields([
+    { name: "document" }, { name: "products" }, { name: "profile" }])
+
+
+module.exports = {
+    upload,
+    uploads
+}

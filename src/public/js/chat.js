@@ -38,7 +38,7 @@ Swal.fire({
 
 }).then((result) => {
         user=result.value
-        console.log(user)
+     
 
     {
       Swal.fire({

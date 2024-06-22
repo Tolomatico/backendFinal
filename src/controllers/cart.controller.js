@@ -6,7 +6,9 @@ const CartManager = require("../dao/db/cart-manager-db.js")
 const cartManager = new CartManager()
 const ProductManager = require("../dao/db/product-manager-db.js")
 const productManager = new ProductManager()
-const Toastify=require("toastify-js")
+const UserManager = require("../dao/db/user-manager-db.js")
+const userManager = new UserManager()
+
 
 
 class CartController {
@@ -17,7 +19,7 @@ class CartController {
 
             const cart = await cartManager.getCartById(cartId)
             let products = cart.products
-            const user = await usersModel.findOne({ cart: cartId })
+            const user = await userManager.get({ cart: cartId })
 
             const noStockProducts = []
             const stockProducts = []
@@ -50,12 +52,11 @@ class CartController {
 
             await ticket.save()
 
-
-            res.status(201).json(ticket)
+            res.status(201).json({ status: "success", message: "Ticket Generado con éxito", payload: ticket })
 
 
         } catch (error) {
-            response(res, 404, `Error al generar el ticket: ${error}`)
+            res.status(404).json({ status: "error", error: "Error al generar el ticket" })
         }
 
     }
@@ -66,7 +67,7 @@ class CartController {
             res.json(carts)
 
         } catch {
-            console.error("error al obterner carrito", error)
+
             res.json({ error: "Error en el servidor" })
         }
 
@@ -95,21 +96,31 @@ class CartController {
         const cartId = req.params.cid
         const productId = req.params.pid
         const quantity = req.body.quantity || 1
-        const {email}=req.user || "test@example.com"
+        const { email } = req.user || "test@example.com"
+
+
 
         try {
-            const productOwner= await productManager.getProductById(productId)
-            
-            if(productOwner.owner!==email){
-                const cart = await cartManager.addProducts(cartId, productId, quantity)
+            const productOwner = await productManager.getProductById(productId)
 
-               res.json({status:"success",message:"Se agrego el producto al carrito",payload:cart})
+            const cart = await cartManager.getCartById(cartId)
+            const isRepited = cart.products.some(product => product.product._id == productId)
+            console.log(isRepited)
+
+            if (!isRepited) {
                 
+            await cartManager.addProducts(cartId, productId, quantity)
 
-            }return res.json("No puedes comprar tus productos")
-            
+            return res.status(201).json({ status: "success", message: "Se agrego el producto al carrito" })
+          
+            }
+            return res.json({ status: "error", error: "El producto ya está en el carrito" })
+
+
         } catch (error) {
             req.logger.error(`Error al agregar el producto:${error}`)
+            return res.status(404).json({ status: "error", error: "Error al querer agregar el producto al carrito" })
+
         }
     }
 
@@ -118,10 +129,10 @@ class CartController {
         const pid = req.params.pid
 
         try {
-            const productToDelete = await cartManager.deleteProductFromCart(cid, pid)
-            res.send(productToDelete)
+            await cartManager.deleteProductFromCart(cid, pid)
+            res.status(200).json({ status: "success", message: "Producto elimanado correctamente" });
         } catch (error) {
-            console.log("Error al borrar el producto", error)
+            res.status(400).json({ status: "error", message: "Oops hubo un error..." })
         }
     }
 
@@ -129,10 +140,14 @@ class CartController {
         const cid = req.params.cid
 
         try {
-            const emptyCart = await cartManager.emptyCart(cid)
-            res.send(emptyCart)
+            const cart = await cartManager.getCartById(cid)
+            if (cart.products.length === 0) {
+                return res.json({ status: 200, message: "El carrito ya se encuentra vacío" })
+            }
+            await cartManager.emptyCart(cid)
+            res.json({ status: 201, message: "Carrito vaciado" })
         } catch (error) {
-            console.log("Error al vaciar el carrito")
+            res.json({ status: 404, error: "No se pudo vaciar el carrito" })
         }
     }
 
@@ -142,12 +157,11 @@ class CartController {
 
         try {
             const updateProducts = await cartManager.updateProductsFromCart(cid, products)
-            res.send(updateProducts)
+            res.json(updateProducts)
 
         } catch (error) {
-            console.log("Error al querer agregar productos", error)
-        }
-    }
+            res.json({ status: 404, error: "No se pudo actualizar el producto" })
+    }}
 
     async updateProduct(req, res) {
         const cid = req.params.cid
@@ -155,11 +169,11 @@ class CartController {
         const quantity = req.body.quantity
 
         try {
-            const productQuantityModified = await cartManager.updateCartProduct(cid, pid, quantity)
-            res.send(productQuantityModified)
+            await cartManager.updateCartProduct(cid, pid, quantity)
+            res.status(200).json({ status: "success", message: "Cantidad modificada" })
 
         } catch (error) {
-            console.log("Error al querer modificar la cantidad del producto", error)
+            res.status(400).json({ status: "error", error: "No se pudo modificar la cantidad" })
         }
     }
 

@@ -20,7 +20,7 @@ const cartsSchema= new mongoose.Schema({
 
  cartsSchema.pre("findOne",function(next){
 
-    this.populate("products.product","_id title price")
+    this.populate("products.product","_id title price thumbnail")
     next()
  })
 

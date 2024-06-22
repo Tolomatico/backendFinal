@@ -11,7 +11,7 @@ router.post("/:cid/product/:pid",cartController.addProduct)
 router.delete("/:cid/product/:pid",cartController.deleteProduct)
 router.delete("/:cid",cartController.emptyCart)
 router.put("/:cid", cartController.updateProducts)
-router.put("/:cid/products/:pid",cartController.updateProduct)
+router.put("/:cid/product/:pid",cartController.updateProduct)
 
 
 module.exports = router

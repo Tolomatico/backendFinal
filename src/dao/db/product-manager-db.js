@@ -11,14 +11,14 @@ class ProductManager {
 
         try {
             if (!title || !description || !price || !thumbnail || !code || !stock || !status || !category || !img || !owner) {
-                console.log("Existen campos vacios,por favor, completarlos")
-                return
+                
+                return "Existen campos vacios,por favor, completarlos"
             }
     
             const productoExistente= await productsModel.findOne({code:code})
             if(productoExistente){
-                console.log("El codigo debe ser único")
-                return
+              
+                return "El codigo debe ser único"
             }
     
     

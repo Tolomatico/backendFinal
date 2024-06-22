@@ -4,8 +4,6 @@ const express = require("express")
 const app = express()
 const configObject= require("./config/config.js")
 const PUERTO=configObject.puerto
-const exphbs = require("express-handlebars")
-const multer = require("multer")
 const cookieParser = require("cookie-parser")
 const session = require('express-session')
 const passport = require("passport")
@@ -14,8 +12,6 @@ const cors = require("cors")
 const authMiddleware = require("./middleware/authmiddleware.js")
 const compression=require("express-compression")
 const addLogger=require("./utils/logger.js")
-const {cpus}=require("os")
-const cpu=cpus().length
 const swaggerJSDoc=require("swagger-jsdoc")
 const swaggerUIExpress=require("swagger-ui-express")
 
@@ -23,13 +19,6 @@ const swaggerUIExpress=require("swagger-ui-express")
 ///  Conexion a MONGO DB ///
 
 require("./database.js")
-
-
-/// Configuración Handlebars ///
-
-app.engine("handlebars", exphbs.engine())
-app.set("view engine", "handlebars")
-app.set("views", "./src/views")
 
 /// Importación de rutas ///
 
@@ -39,6 +28,12 @@ const viewsRouter = require("./routes/views.router")
 const usersRouter = require("./routes/users.router")
 const sessionRouter = require("./routes/session.router.js")
 const socketService = require("./socket/socket.js")
+
+const corsOptions = {
+    origin: ['http://localhost:5173',"https://cerulean-khapse-58b93b.netlify.app"], 
+    credentials: true,
+    optionsSuccessStatus: 200
+}
 
 ///  AuthMiddleware  ///
 initilizePassport()
@@ -52,7 +47,7 @@ app.use(cookieParser())
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(authMiddleware)
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static("./src/public"))

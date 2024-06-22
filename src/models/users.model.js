@@ -1,50 +1,59 @@
-const mongoose=require("mongoose")
-const usersCollection="users"
+const mongoose = require("mongoose")
+const usersCollection = "users"
 
-const usersSchema= new mongoose.Schema({
-    first_name:{
-        type:String
+const usersSchema = new mongoose.Schema({
+    first_name: {
+        type: String
     },
-    last_name:{
-        type:String,
-        
-    },
-    email:{
-        type:String,
-        unique:true,
-        index:true
-    },
-    password:{
-        type:String,
-       
-    },
-    age:{
-        type:Number
-        
-    },
-    rol:{
-        type:String,
-        enum:['admin', 'user','premium'],
-        default:"user"
+    last_name: {
+        type: String,
 
     },
-    cart:{
+    email: {
+        type: String,
+        unique: true,
+        index: true
+    },
+    password: {
+        type: String,
+
+    },
+    age: {
+        type: Number
+
+    },
+    rol: {
+        type: String,
+        enum: ['admin', 'user', 'premium'],
+        default: "user"
+
+    },
+    cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"cart"
+        ref: "cart"
 
     },
-    accountId:{
-        type:String,
+    accountId: {
+        type: String,
     },
-    provider:{
-        type:String
+    provider: {
+        type: String
     },
-    token:{
-        type:String
-    }
+    token: {
+        type: String
+    },
+    documents: [
+        {
+            name: String,
+            reference: String
+        }
+    ],
+    last_connection: String
+
+
 
 })
 
-const usersModel= mongoose.model(usersCollection,usersSchema)
+const usersModel = mongoose.model(usersCollection, usersSchema)
 
-module.exports=usersModel
+module.exports = usersModel

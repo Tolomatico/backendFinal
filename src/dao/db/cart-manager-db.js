@@ -37,7 +37,10 @@ class CartManager {
                 return null
             }
 
+
             const cartProductExisting = cart.products.find(item => item.product._id.toString() === pid)
+
+
             if (cartProductExisting) {
                 cartProductExisting.quantity += quantity
             } else {
@@ -54,7 +57,10 @@ class CartManager {
 
     async getCarts() {
         try {
-            const carts = await cartsModel.find()
+            const carts = await cartsModel.find().populate({
+                path: "products.product",
+                model: "products"
+            })
             if (!carts) {
                 console.log("Error al recibir los carritos")
                 return null
@@ -73,6 +79,11 @@ class CartManager {
                 console.log("No se encontro el carrito")
                 return null
             }
+            if (cart.products.length === 0) {
+
+                return console.log("El carrito ya se encuentra vacio")
+            }
+
             cart.products = []
             await cart.save()
 
@@ -108,9 +119,9 @@ class CartManager {
                 console.log("No se encuentra el carrito buscado")
                 return null
             }
-            
+
             cart.products = cart.products.filter(item => item.product._id.toString() !== pid)
-            
+
             await cart.save()
             return cart
 
@@ -142,34 +153,44 @@ class CartManager {
     }
 
     async updateCartProduct(cid, pid, quantity) {
-
         try {
-            const cart = await cartsModel.findById(cid)
+            const cart = await cartsModel.findById(cid);
             if (!cart) {
-                console.log("No se encuentra el carrito buscado")
-                return null
+                console.log("No se encuentra el carrito buscado");
+                return null;
             }
 
-            const index = cart.products.findIndex(item => item.product == pid)
-
-            if (index !== -1) {
-
-                cart.products[index].quantity = quantity
-                cart.save()
-                console.log("Cantidad modificada")
-            } else {
-                console.log("No existe un producto con ese id en el carrito")
+            const index = cart.products.findIndex(item => item.product._id == pid);
+            if (index === -1) {
+                console.log("No existe un producto con ese id en el carrito");
+                return null;
             }
 
+            const product = cart.products[index];
 
+
+
+            if (quantity === 1 && product.quantity < 6) {
+
+                product.quantity++
+                await cart.save();
+                return cart;
+            }
+
+            if (quantity === -1 && product.quantity === 1) {
+                console.log("Cantidad mínima de un producto");
+                return null;
+            } else if (quantity === -1) {
+                product.quantity--;
+            } 
+
+            await cart.save();
+            return cart;
         } catch (error) {
-            console.log("No se encontro el producto a modificar", error)
+            console.log("Error al modificar el producto en el carrito", error);
+            return null;
         }
-
-
     }
-
-
 
 }
 
