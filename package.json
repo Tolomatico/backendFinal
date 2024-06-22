@@ -2,7 +2,7 @@
   "name": "1erdesafio",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "/src/app.js",
   "scripts": {
     "dev": "nodemon src/app.js --mode develop",
     "start": "node /opt/render/project/src/app.js --mode production",
