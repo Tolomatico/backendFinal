@@ -2,10 +2,10 @@
   "name": "1erdesafio",
   "version": "1.0.0",
   "description": "",
-  "main": "/src/app.js",
+  "main": "src/app.js",
   "scripts": {
     "dev": "nodemon src/app.js --mode develop",
-    "start": "node /opt/render/project/src/app.js --mode production",
+    "start": "node src/app.js --mode production",
     "test": "mocha test/supertest.test.js --mode develop"
   },
   "keywords": [],
