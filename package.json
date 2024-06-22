@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/app.js --mode develop",
-    "start": "node src/app.js --mode production",
+    "start": "node /opt/render/project/src/app.js --mode production",
     "test": "mocha test/supertest.test.js --mode develop"
   },
   "keywords": [],
