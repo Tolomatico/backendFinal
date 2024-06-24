@@ -4,6 +4,7 @@ const express = require("express")
 const app = express()
 const configObject= require("./config/config.js")
 const PUERTO=configObject.puerto
+const front_url=configObject.front_url
 const cookieParser = require("cookie-parser")
 const session = require('express-session')
 const passport = require("passport")
@@ -30,7 +31,7 @@ const sessionRouter = require("./routes/session.router.js")
 const socketService = require("./socket/socket.js")
 
 const corsOptions = {
-    origin: ['http://localhost:5173',"https://cerulean-khapse-58b93b.netlify.app"], 
+    origin: ['http://localhost:5173',front_url], 
     credentials: true,
     optionsSuccessStatus: 200
 }
