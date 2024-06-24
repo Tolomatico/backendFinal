@@ -9,6 +9,8 @@ const userManager = new UserManager()
 const bcrypt = require("bcrypt")
 const generateTokenRecover = require("../utils/token.js")
 const usersModel = require("../models/users.model.js")
+const configObject=require("../config/config.js")
+const front_url=configObject.front_url
 
 
 
@@ -124,7 +126,7 @@ class userController {
                     <p>${user.token}</p>
                     <p>Ingresa el codigo para poder recuperar tu password:
 
-                    <a href="http://localhost:5173/recoverpassword">Recuperar password</a></p>
+                    <a href="https://cerulean-khapse-58b93b.netlify.app/recoverpassword">Recuperar password</a></p>
                 `
             })
 
