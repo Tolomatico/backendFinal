@@ -10,7 +10,7 @@ const bcrypt = require("bcrypt")
 const generateTokenRecover = require("../utils/token.js")
 const usersModel = require("../models/users.model.js")
 const configObject=require("../config/config.js")
-const front_url=configObject.front_url
+
 
 
 
@@ -20,9 +20,9 @@ class userController {
 
     async deleteUser(req,res){
         const {id}=req.params
-        console.log(id)
+
         try {
-            await userManager.delete(id)
+              await userManager.delete(id)
 
             res.status(200).json({status:"success",message:"Usuario Eliminado"})
         } catch (error) {
@@ -126,7 +126,7 @@ class userController {
                     <p>${user.token}</p>
                     <p>Ingresa el codigo para poder recuperar tu password:
 
-                    <a href="https://cerulean-khapse-58b93b.netlify.app/recoverpassword">Recuperar password</a></p>
+                    <a href="https://ecommercefinalbackend.netlify.app/recoverpassword">Recuperar password</a></p>
                 `
             })
 

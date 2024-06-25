@@ -65,7 +65,7 @@ class UserManager {
     async delete(id){
        
         try {
-            return userModel.findOneAndDelete(id)
+            return userModel.findOneAndDelete({_id:id})
             
         } catch (error) {
             console.log("Error al eliminar el usuario",error)

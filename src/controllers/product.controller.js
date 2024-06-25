@@ -1,7 +1,9 @@
 const ProductManager = require("../dao/db/product-manager-db.js")
 const manager = new ProductManager()
 const { upload } = require("../utils/multer.js")
-
+const transport = require("../config/transport.js")
+const UserManager = require("../dao/db/user-manager-db.js")
+const userManager = new UserManager()
 class ProductController {
 
     async subirArchivo(req, res, next) {
@@ -22,9 +24,9 @@ class ProductController {
             }
 
             await manager.addProduct(newProduct)
-         
+
             return res.status(201).json({ status: "success", message: "Producto creado correctamente" });
-         
+
         } catch (error) {
             res.status(400).json({ status: "error", error: "Error al crear el producto" });
         }
@@ -72,6 +74,22 @@ class ProductController {
         const { id } = req.params
 
         try {
+
+            const product = await manager.getProductById(id)
+            const user = await userManager.get({ email: product.owner })
+
+            if (user.rol === "premium") {
+                transport.sendMail({
+                    from: "BackendCoderhouse",
+                    to: user.email,
+                    subject: "Producto Eliminado",
+                    text: "Producto eliminado",
+                    html: `
+                    <p>Hola , el producto ${product.title} ah sido eliminado.</p>
+                `
+                })
+            }
+
 
             await manager.deleteProduct(id)
             res.status(200).json({ status: "success", message: "Producto eliminado correctamente" })
